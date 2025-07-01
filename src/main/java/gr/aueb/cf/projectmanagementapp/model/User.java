@@ -7,7 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,7 @@ public class User extends AbstractEntity implements UserDetails {
     private String password;
 
     @Column(name = "password_last_modified", nullable = false)
-    private LocalDateTime passwordLastModified;
+    private Instant passwordLastModified;
 
     @ColumnDefault("0")
     @Column(name = "login_consecutive_fail_attempts")
@@ -66,6 +68,9 @@ public class User extends AbstractEntity implements UserDetails {
     @ColumnDefault("true")
     @Column(name="account_non_locked", nullable = false)
     private Boolean accountNonLocked;
+
+    @Column(name = "lock_time")
+    private LocalDateTime lockTime;
 
     @Column(name="deleted_at")
     private LocalDateTime deletedAt;
@@ -113,8 +118,7 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        LocalDateTime expirationDate = passwordLastModified.plusDays(MAX_PASSWORD_VALIDITY_DAYS);
-        return LocalDateTime.now().isBefore(expirationDate);
+        return passwordLastModified.isAfter(Instant.now().minus(90, ChronoUnit.DAYS));
     }
 
     @Override
@@ -125,7 +129,7 @@ public class User extends AbstractEntity implements UserDetails {
     @PrePersist
     protected void onCreate() {
         if (uuid == null) uuid = UUID.randomUUID().toString();
-        if (passwordLastModified == null) passwordLastModified = LocalDateTime.now();
+        if (passwordLastModified == null) passwordLastModified = Instant.now();
         if (loginConsecutiveFailAttempts == null) loginConsecutiveFailAttempts = 0;
         if (enabled == null) enabled = false;
         if (verified == null) verified = false;
@@ -135,11 +139,14 @@ public class User extends AbstractEntity implements UserDetails {
 
     // Helper methods for business logic
     public void lockAccount() {
-        this.accountNonLocked = false;
+        this.setAccountNonLocked(false);
+        this.setLockTime(LocalDateTime.now());
     }
 
     public void unlockAccount() {
-        this.accountNonLocked = true;
+        this.setAccountNonLocked(true);
+        this.setLockTime(null);
+        this.setLoginConsecutiveFailAttempts(0);
     }
 
     public void verifyAccount() {
@@ -151,12 +158,12 @@ public class User extends AbstractEntity implements UserDetails {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
-        this.passwordLastModified = LocalDateTime.now();
+        this.passwordLastModified = Instant.now();
     }
 
     // Password reset methods
-    public void createPasswordResetToken() {
-        this.passwordResetToken = new PasswordResetToken(this);
+    public void createPasswordResetToken(Integer expiryTime) {
+        this.passwordResetToken = new PasswordResetToken(this, expiryTime);
     }
 
     public void clearPasswordResetToken() {
