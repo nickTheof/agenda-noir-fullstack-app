@@ -182,6 +182,10 @@ public class User extends AbstractEntity implements UserDetails {
         this.verificationToken = new VerificationToken(this);
     }
 
+    public void createVerificationToken(Integer expiryTime) {
+        this.verificationToken = new VerificationToken(this, expiryTime);
+    }
+
     public void clearVerificationToken() {
         if (this.verificationToken != null) {
             this.verificationToken.setUser(null);
