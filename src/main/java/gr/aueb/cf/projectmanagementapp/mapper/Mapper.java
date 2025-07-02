@@ -1,5 +1,6 @@
 package gr.aueb.cf.projectmanagementapp.mapper;
 
+import gr.aueb.cf.projectmanagementapp.dto.UserPatchDTO;
 import gr.aueb.cf.projectmanagementapp.dto.UserReadOnlyDTO;
 import gr.aueb.cf.projectmanagementapp.dto.UserRegisterDTO;
 import gr.aueb.cf.projectmanagementapp.dto.UserUpdateDTO;
@@ -7,6 +8,8 @@ import gr.aueb.cf.projectmanagementapp.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 
 @Component
@@ -28,6 +31,9 @@ public class Mapper {
     }
 
     public User mapToUser(UserUpdateDTO dto, User user) {
+        if (dto.username() != null) {
+            user.setUsername(dto.username());
+        }
         if (dto.password() != null) {
             user.updatePassword(passwordEncoder.encode(dto.password()));
         }
@@ -42,6 +48,43 @@ public class Mapper {
         }
         if (dto.verified() != null) {
             user.setVerified(dto.verified());
+        }
+        if (dto.deleted() != null) {
+            if (dto.deleted()) {
+                if (!user.getIsDeleted()) {
+                    user.setIsDeleted(true);
+                    user.setDeletedAt(LocalDateTime.now());
+                }
+            } else {
+                if (user.getIsDeleted()) {
+                    user.setIsDeleted(false);
+                    user.setDeletedAt(null);
+                }
+            }
+
+        }
+        return user;
+    }
+
+    public User mapToUser(UserPatchDTO dto, User user) {
+        if (dto.verified() != null) {
+            user.setVerified(dto.verified());
+        }
+        if (dto.deleted() != null) {
+            if (dto.deleted()) {
+                if (!user.getIsDeleted()) {
+                    user.setIsDeleted(true);
+                    user.setDeletedAt(LocalDateTime.now());
+                }
+            } else {
+                if (user.getIsDeleted()) {
+                    user.setIsDeleted(false);
+                    user.setDeletedAt(null);
+                }
+            }
+        }
+        if (dto.enabled() != null) {
+            user.setEnabled(dto.enabled());
         }
         return user;
     }
