@@ -40,6 +40,7 @@ public class AuthRestController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthRestController.class);
 
 
+    @PostMapping("/register/open")
     @Operation(
             summary = "Register a new user from the OPEN registration endpoint.",
             description = "User registration endpoint. User created from this endpoint has not any extra authority. With the default configuration, he can access only his own resources.",
@@ -50,8 +51,7 @@ public class AuthRestController {
                                     implementation = UserRegisterDTO.class
                             )
                     )
-            ),
-            security = {}
+            )
     )
     @ApiResponses(
             value = {
@@ -93,7 +93,6 @@ public class AuthRestController {
                     ),
             }
     )
-    @PostMapping("/register/open")
     public ResponseEntity<UserReadOnlyDTO> registerUser(
             @Valid @RequestBody UserRegisterDTO dto,
             BindingResult bindingResult
@@ -131,6 +130,7 @@ public class AuthRestController {
         }
     }
 
+    @PostMapping("/login/access-token")
     @Operation(
             summary = "Authenticate a user. After successful authentication, it returns the signed JWT Bearer Token.",
             description = "Authentication endpoint that provides the verified Bearer JWT token.",
@@ -140,8 +140,7 @@ public class AuthRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = AuthenticationRequestDTO.class)
                     )
-            ),
-            security = {}
+            )
     )
     @ApiResponses(
             value = {
@@ -170,7 +169,6 @@ public class AuthRestController {
                     )
             }
     )
-    @PostMapping("/login/access-token")
     public ResponseEntity<AuthenticationResponseDTO> loginUser(
             @Valid @RequestBody AuthenticationRequestDTO dto,
             BindingResult bindingResult
@@ -186,6 +184,7 @@ public class AuthRestController {
     }
 
 
+    @PostMapping("/verify-account")
     @Operation(
             summary = "Verify user account after successful registration.",
             description = "Using token verification from email service, the new registered user activate its own account.",
@@ -195,8 +194,7 @@ public class AuthRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ActivationTokenDTO.class)
                     )
-            ),
-            security = {}
+            )
     )
     @ApiResponses(
             value = {
@@ -225,7 +223,6 @@ public class AuthRestController {
                     )
             }
     )
-    @PostMapping("/verify-account")
     public ResponseEntity<ApiMessageResponseDTO> verifyAccount(
             @Valid @RequestBody ActivationTokenDTO dto,
             BindingResult bindingResult
@@ -252,18 +249,19 @@ public class AuthRestController {
         }
     }
 
+    @PostMapping("/password-recovery/{username}")
     @Operation(
             summary = "Request password recovery for a user",
             description = "Generates a password reset token and sends a recovery link to the user's email address if the username exists.",
             parameters = {
                     @Parameter(
+                            name = "username",
                             description = "The username of the user requesting a password reset in email format",
                             required = true,
                             example = "admin@test.com",
                             in = ParameterIn.PATH
                     )
-            },
-            security = {}
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -283,7 +281,6 @@ public class AuthRestController {
                     )
             )
     })
-    @PostMapping("/password-recovery/{username}")
     public ResponseEntity<ApiMessageResponseDTO> requestPasswordRecovery(
             @PathVariable("username") String username
     ) throws AppServerException {
@@ -311,6 +308,7 @@ public class AuthRestController {
     }
 
 
+    @PostMapping("/reset-password")
     @Operation(
             summary = "Reset user password using a valid recovery token",
             description = "This endpoint resets the user's password if a valid password recovery token is provided.",
@@ -320,8 +318,7 @@ public class AuthRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ResetPasswordAfterRecoveryDTO.class)
                     )
-            ),
-            security = {}
+            )
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -349,7 +346,6 @@ public class AuthRestController {
                     )
             )
     })
-    @PostMapping("/reset-password")
     public ResponseEntity<ApiMessageResponseDTO> resetPassword(
             @Valid @RequestBody ResetPasswordAfterRecoveryDTO dto,
             BindingResult bindingResult
