@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         } catch (Exception e) {
             LOGGER.warn("WARN: Something went wrong while parsing JWT ", e);
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             String jsonBody = "{\"code\": \"invalidToken\", \"description\"" + e.getMessage() + "\"}";
             response.getWriter().write(jsonBody);
