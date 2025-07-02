@@ -5,6 +5,7 @@ import gr.aueb.cf.projectmanagementapp.dto.ApiErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,6 +54,19 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({AppServerException.class})
     public ResponseEntity<ApiErrorDTO> handleConstraintViolationException(AppServerException e, HttpServletRequest request) {
         return new ResponseEntity<>(new ApiErrorDTO(e.getCode(), e.getMessage(), System.currentTimeMillis(), request.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<ApiErrorDTO> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
+        return new ResponseEntity<>(
+                new ApiErrorDTO(
+                        "AccessDenied",
+                        "You don't have permission to access this resource",
+                        System.currentTimeMillis(),
+                        request.getRequestURI()
+                ),
+                HttpStatus.FORBIDDEN
+        );
     }
 
     @ExceptionHandler({Exception.class})
