@@ -25,11 +25,11 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Getter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PROTECTED)
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
 
-    @Getter(AccessLevel.PRIVATE)
+    @Getter(AccessLevel.PROTECTED)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_permissions")
     private Set<Permission> permissions = new HashSet<>();

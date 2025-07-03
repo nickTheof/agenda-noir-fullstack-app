@@ -220,14 +220,14 @@ public class User extends AbstractEntity implements UserDetails {
         if (role == null) return;
         if (roles == null) roles = new HashSet<>();
         this.roles.add(role);
-        role.getAllUsers().add(this);
+        role.getUsers().add(this);
     }
 
     public void removeRole(Role role) {
         if (role == null) return;
         if (roles == null) return;
         this.roles.remove(role);
-        role.getAllUsers().remove(this);
+        role.getUsers().remove(this);
     }
 
     // Soft delete user
