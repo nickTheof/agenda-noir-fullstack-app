@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -73,7 +74,50 @@ public class UserRestController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    // TODO POST /users/filtered -> retrieve all users filtered and paginated . Accessible by users with READ_USER permission
+
+    @PostMapping("/filtered")
+    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_USER')")
+    @Operation(
+            summary = "Get filtered users (paginated)",
+            description = "Returns a paginated list of users matching provided filters. Only accessible by users with READ_USER permission.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = UserFiltersDTO.class)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered users retrieved successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = Paginated.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+            }
+    )
+    public ResponseEntity<Paginated<UserReadOnlyDTO>> getFilteredUsersPaginated(
+            @Nullable @RequestBody UserFiltersDTO filters
+    ) {
+        if (filters == null) filters = new UserFiltersDTO();
+        return new ResponseEntity<>(userService.findUsersFilteredPaginated(filters), HttpStatus.OK);
+    }
 
     @PostMapping
     @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'CREATE_USER')")
