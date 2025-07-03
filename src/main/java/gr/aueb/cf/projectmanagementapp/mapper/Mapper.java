@@ -1,11 +1,10 @@
 package gr.aueb.cf.projectmanagementapp.mapper;
 
-import gr.aueb.cf.projectmanagementapp.dto.UserPatchDTO;
-import gr.aueb.cf.projectmanagementapp.dto.UserReadOnlyDTO;
-import gr.aueb.cf.projectmanagementapp.dto.UserRegisterDTO;
-import gr.aueb.cf.projectmanagementapp.dto.UserUpdateDTO;
+import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
+import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -87,5 +86,44 @@ public class Mapper {
             user.setEnabled(dto.enabled());
         }
         return user;
+    }
+
+    public UserFilters mapToUserFilters(UserFiltersDTO dto) {
+        UserFilters userFilters = new UserFilters();
+        if (dto.page() != null) {
+            userFilters.setPage(dto.page());
+        }
+        if (dto.size() != null) {
+            userFilters.setSize(dto.size());
+        }
+        if (dto.sortBy() != null) {
+            userFilters.setSortBy(dto.sortBy());
+        }
+        if (dto.orderBy() != null) {
+            userFilters.setOrderBy(Sort.Direction.valueOf(dto.orderBy()));
+        }
+        if (dto.username() != null) {
+            userFilters.setUsername(dto.username());
+        }
+        if (dto.uuid() != null) {
+            userFilters.setUuid(dto.uuid());
+        }
+        if (dto.lastname() != null) {
+            userFilters.setLastname(dto.lastname());
+        }
+        if (dto.enabled() != null) {
+            userFilters.setEnabled(dto.enabled());
+        }
+        if (dto.isDeleted() != null) {
+            userFilters.setIsDeleted(dto.isDeleted());
+        }
+        if (dto.verified() != null) {
+            userFilters.setVerified(dto.verified());
+        }
+        if (dto.permissions() != null) {
+            userFilters.setPermissions(dto.permissions());
+        }
+
+        return userFilters;
     }
 }
