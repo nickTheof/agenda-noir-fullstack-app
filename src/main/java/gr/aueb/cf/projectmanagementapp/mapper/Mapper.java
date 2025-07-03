@@ -2,13 +2,16 @@ package gr.aueb.cf.projectmanagementapp.mapper;
 
 import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.dto.*;
+import gr.aueb.cf.projectmanagementapp.model.Role;
 import gr.aueb.cf.projectmanagementapp.model.User;
+import gr.aueb.cf.projectmanagementapp.model.static_data.Permission;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -125,5 +128,19 @@ public class Mapper {
         }
 
         return userFilters;
+    }
+
+    public PermissionReadOnlyDTO mapToPermissionReadOnlyDTO(Permission permission) {
+        return new PermissionReadOnlyDTO(
+                permission.getId(), permission.getName(), permission.getResource().name(), permission.getAction().name()
+        );
+    }
+
+    public RoleReadOnlyDTO mapToRoleReadOnlyDTO(Role role) {
+        return new RoleReadOnlyDTO(
+                role.getId(),
+                role.getName(),
+                role.getAllPermissions().stream().map(this::mapToPermissionReadOnlyDTO).collect(Collectors.toSet())
+        );
     }
 }
