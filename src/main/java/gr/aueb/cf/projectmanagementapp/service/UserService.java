@@ -8,8 +8,10 @@ import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.core.specifications.UserSpecification;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
+import gr.aueb.cf.projectmanagementapp.model.Role;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import gr.aueb.cf.projectmanagementapp.model.VerificationToken;
+import gr.aueb.cf.projectmanagementapp.repository.RoleRepository;
 import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,6 +28,7 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
     private final Mapper mapper;
+    private final RoleRepository roleRepository;
 
 
     @Override
@@ -182,5 +185,23 @@ public class UserService implements IUserService {
             spec = spec.and(UserSpecification.userPermissionIn(filters.getPermissions()));
         }
         return spec;
+    }
+
+    @Override
+    public List<RoleReadOnlyDTO> findAllUserRoles(String uuid) throws AppObjectNotFoundException {
+        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + uuid + " not found"));
+        return user.getAllRoles().stream().map(mapper::mapToRoleReadOnlyDTO).collect(Collectors.toList());
+    }
+
+    @Transactional(rollbackFor = {AppObjectNotFoundException.class})
+    @Override
+    public List<RoleReadOnlyDTO> changeUserRoles(String uuid, UserRoleInsertDTO dto) throws AppObjectNotFoundException {
+        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + uuid + " not found"));
+        for (String roleName : dto.roleNames()){
+            Role role = roleRepository.findByName(roleName).orElseThrow(() -> new AppObjectNotFoundException("Role", "Role with name " + roleName + " not found"));
+            user.addRole(role);
+        }
+        User updatedUser = userRepository.save(user);
+        return updatedUser.getAllRoles().stream().map(mapper::mapToRoleReadOnlyDTO).collect(Collectors.toList());
     }
 }

@@ -23,4 +23,6 @@ public interface IUserService {
     UserReadOnlyDTO updateUserByUUID(String uuid, UserPatchDTO dto) throws AppObjectNotFoundException;
     void changeUserPassword(String uuid, ChangePasswordDTO passwordDTO) throws AppObjectNotFoundException, AppObjectNotAuthorizedException;
     void deleteUserByUuid(String uuid) throws AppObjectNotFoundException;
+    List<RoleReadOnlyDTO> findAllUserRoles(String uuid) throws AppObjectNotFoundException;
+    List<RoleReadOnlyDTO> changeUserRoles(String uuid, UserRoleInsertDTO dto) throws AppObjectNotFoundException;
 }
