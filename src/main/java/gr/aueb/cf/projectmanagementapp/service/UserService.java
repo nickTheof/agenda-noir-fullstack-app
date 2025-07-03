@@ -4,12 +4,15 @@ import gr.aueb.cf.projectmanagementapp.authentication.AuthenticationService;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectAlreadyExistsException;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotAuthorizedException;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
+import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
+import gr.aueb.cf.projectmanagementapp.core.specifications.UserSpecification;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import gr.aueb.cf.projectmanagementapp.model.VerificationToken;
 import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,13 @@ public class UserService implements IUserService {
     @Override
     public List<UserReadOnlyDTO> findAllUsers() {
         return userRepository.findAll().stream().map(mapper::mapToUserReadOnlyDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public Paginated<UserReadOnlyDTO> findUsersFilteredPaginated(UserFiltersDTO filters) {
+        UserFilters userFilters = mapper.mapToUserFilters(filters);
+        var filtered = userRepository.findAll(getSpecsFromFilters(userFilters), userFilters.getPageable());
+        return new Paginated<>(filtered.map(mapper::mapToUserReadOnlyDTO));
     }
 
     @Transactional
@@ -146,5 +156,31 @@ public class UserService implements IUserService {
             throw new AppObjectNotFoundException("User", "User with uuid " + uuid + " not found");
         }
         userRepository.delete(user.get());
+    }
+
+    private Specification<User> getSpecsFromFilters(UserFilters filters) {
+        Specification<User> spec = (root, query, builder) -> null;
+        if (filters.getUuid() != null) {
+            spec = spec.and(UserSpecification.usersFieldLike("uuid", filters.getUuid()));
+        }
+        if (filters.getUsername() != null) {
+            spec = spec.and(UserSpecification.usersFieldLike("username", filters.getUsername()));
+        }
+        if (filters.getLastname() != null) {
+            spec = spec.and(UserSpecification.usersFieldLike("lastname", filters.getLastname()));
+        }
+        if (filters.getEnabled() != null) {
+            spec = spec.and(UserSpecification.usersBooleanFieldIs("enabled", filters.getEnabled()));
+        }
+        if (filters.getVerified() != null) {
+            spec = spec.and(UserSpecification.usersBooleanFieldIs("verified", filters.getVerified()));
+        }
+        if (filters.getIsDeleted() != null) {
+            spec = spec.and(UserSpecification.usersBooleanFieldIs("isDeleted", filters.getIsDeleted()));
+        }
+        if (filters.getPermissions() != null) {
+            spec = spec.and(UserSpecification.userPermissionIn(filters.getPermissions()));
+        }
+        return spec;
     }
 }

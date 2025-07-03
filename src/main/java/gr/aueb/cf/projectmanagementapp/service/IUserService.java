@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface IUserService {
     List<UserReadOnlyDTO> findAllUsers();
+    Paginated<UserReadOnlyDTO> findUsersFilteredPaginated(UserFiltersDTO filters);
     UserReadOnlyDTO findUserByUuid(String uuid) throws AppObjectNotFoundException;
     UserReadOnlyDTO registerUser(UserRegisterDTO dto) throws AppObjectAlreadyExistsException;
     UserReadOnlyDTO insertVerifiedUser(UserRegisterDTO dto) throws AppObjectAlreadyExistsException;
