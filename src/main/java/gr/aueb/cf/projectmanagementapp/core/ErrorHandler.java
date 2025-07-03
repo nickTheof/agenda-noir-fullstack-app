@@ -41,6 +41,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ApiErrorDTO(e.getCode(), e.getMessage(), System.currentTimeMillis(), request.getRequestURI()), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler({AppObjectDeletionConflictException.class})
+    public ResponseEntity<ApiErrorDTO> handleConstraintViolationException(AppObjectDeletionConflictException e, HttpServletRequest request) {
+        return new ResponseEntity<>(new ApiErrorDTO(e.getCode(), e.getMessage(), System.currentTimeMillis(), request.getRequestURI()), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler({AppObjectInvalidArgumentException.class})
     public ResponseEntity<ApiErrorDTO> handleConstraintViolationException(AppObjectInvalidArgumentException e, HttpServletRequest request) {
         return new ResponseEntity<>(new ApiErrorDTO(e.getCode(), e.getMessage(), System.currentTimeMillis(), request.getRequestURI()), HttpStatus.BAD_REQUEST);
