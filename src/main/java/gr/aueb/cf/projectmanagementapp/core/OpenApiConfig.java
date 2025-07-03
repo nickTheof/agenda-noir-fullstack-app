@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
         tags = { //TODO: Add the remaining OPEN API tags for swagger
                 @Tag(name = "Authentication", description = "User authentication endpoints"),
                 @Tag(name = "Users", description = "User management endpoints"),
+                @Tag(name = "Roles", description = "Role management endpoints"),
         }
 )
 @SecurityScheme(
