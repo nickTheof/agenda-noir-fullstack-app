@@ -186,22 +186,4 @@ public class UserService implements IUserService {
         }
         return spec;
     }
-
-    @Override
-    public List<RoleReadOnlyDTO> findAllUserRoles(String uuid) throws AppObjectNotFoundException {
-        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + uuid + " not found"));
-        return user.getAllRoles().stream().map(mapper::mapToRoleReadOnlyDTO).collect(Collectors.toList());
-    }
-
-    @Transactional(rollbackFor = {AppObjectNotFoundException.class})
-    @Override
-    public List<RoleReadOnlyDTO> changeUserRoles(String uuid, UserRoleInsertDTO dto) throws AppObjectNotFoundException {
-        User user = userRepository.findByUuid(uuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + uuid + " not found"));
-        for (String roleName : dto.roleNames()){
-            Role role = roleRepository.findByName(roleName).orElseThrow(() -> new AppObjectNotFoundException("Role", "Role with name " + roleName + " not found"));
-            user.addRole(role);
-        }
-        User updatedUser = userRepository.save(user);
-        return updatedUser.getAllRoles().stream().map(mapper::mapToRoleReadOnlyDTO).collect(Collectors.toList());
-    }
 }
