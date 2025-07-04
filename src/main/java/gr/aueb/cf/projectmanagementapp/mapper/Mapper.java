@@ -1,10 +1,13 @@
 package gr.aueb.cf.projectmanagementapp.mapper;
 
 import gr.aueb.cf.projectmanagementapp.core.enums.ProjectStatus;
+import gr.aueb.cf.projectmanagementapp.core.enums.TicketPriority;
+import gr.aueb.cf.projectmanagementapp.core.enums.TicketStatus;
 import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.model.Project;
 import gr.aueb.cf.projectmanagementapp.model.Role;
+import gr.aueb.cf.projectmanagementapp.model.Ticket;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import gr.aueb.cf.projectmanagementapp.model.static_data.Permission;
 import lombok.RequiredArgsConstructor;
@@ -193,6 +196,48 @@ public class Mapper {
                 project.setDeletedAt(null);
             }
         }
+    }
+
+    public TicketReadOnlyDTO mapToTicketReadOnlyDTO(Ticket ticket) {
+        return new TicketReadOnlyDTO(
+                ticket.getId(), ticket.getUuid(), ticket.getTitle(), ticket.getDescription(), ticket.getPriority().name(), ticket.getStatus().name(), ticket.getExpiryDate()
+        );
+    }
+
+    public Ticket mapToTicket(TicketCreateDTO dto) {
+        return new Ticket(
+                null, null, dto.title(), dto.description(),
+                TicketPriority.valueOf(dto.priority()), TicketStatus.valueOf(dto.status()),
+                dto.expiryDate(), null
+        );
+    }
+
+    public Ticket mapToTicket(TicketUpdateDTO dto, Ticket ticket) {
+        ticket.setTitle(dto.title());
+        ticket.setDescription(dto.description());
+        ticket.setPriority(TicketPriority.valueOf(dto.priority()));
+        ticket.setStatus(TicketStatus.valueOf(dto.status()));
+        ticket.setExpiryDate(dto.expiryDate());
+        return ticket;
+    }
+
+    public Ticket mapToTicket(TicketPatchDTO dto, Ticket ticket) {
+        if (dto.title() != null) {
+            ticket.setTitle(dto.title());
+        }
+        if (dto.description() != null) {
+            ticket.setDescription(dto.description());
+        }
+        if (dto.priority() != null) {
+            ticket.setPriority(TicketPriority.valueOf(dto.priority()));
+        }
+        if (dto.status() != null) {
+            ticket.setStatus(TicketStatus.valueOf(dto.status()));
+        }
+        if (dto.expiryDate() != null) {
+            ticket.setExpiryDate(dto.expiryDate());
+        }
+        return ticket;
     }
 
 }
