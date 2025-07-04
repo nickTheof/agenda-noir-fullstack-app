@@ -1,7 +1,9 @@
 package gr.aueb.cf.projectmanagementapp.mapper;
 
+import gr.aueb.cf.projectmanagementapp.core.enums.ProjectStatus;
 import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.dto.*;
+import gr.aueb.cf.projectmanagementapp.model.Project;
 import gr.aueb.cf.projectmanagementapp.model.Role;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import gr.aueb.cf.projectmanagementapp.model.static_data.Permission;
@@ -143,4 +145,54 @@ public class Mapper {
                 role.getAllPermissions().stream().map(this::mapToPermissionReadOnlyDTO).collect(Collectors.toSet())
         );
     }
+
+    public ProjectReadOnlyDTO mapToProjectReadOnlyDTO(Project project) {
+        return new ProjectReadOnlyDTO(
+                project.getId(), project.getUuid(), project.getName(), project.getDescription(), project.getOwner().getUuid(), project.getStatus().name(), project.getIsDeleted());
+    }
+
+    public Project mapToProject(ProjectCreateDTO dto) {
+        return new Project(
+                null, null, dto.name(), dto.description(), null, null, ProjectStatus.valueOf(dto.status()), null, null
+        );
+    }
+
+    public Project mapToProject(ProjectUpdateDTO dto, Project project) {
+        project.setName(dto.name());
+        project.setDescription(dto.description());
+        project.setStatus(ProjectStatus.valueOf(dto.status()));
+        handleSofDeleteProject(dto.deleted(), project);
+        return project;
+    }
+
+    public Project mapToProject(ProjectPatchDTO dto, Project project) {
+        if (dto.name() != null) {
+            project.setName(dto.name());
+        }
+        if (dto.description() != null) {
+            project.setDescription(dto.description());
+        }
+        if (dto.status() != null) {
+            project.setStatus(ProjectStatus.valueOf(dto.status()));
+        }
+        if (dto.deleted() != null) {
+            handleSofDeleteProject(dto.deleted(), project);
+        }
+        return project;
+    }
+
+    private void handleSofDeleteProject(Boolean newDeletedStatus, Project project) {
+        if (newDeletedStatus) {
+            if (!project.getIsDeleted()) {
+                project.setIsDeleted(true);
+                project.setDeletedAt(LocalDateTime.now());
+            }
+        } else {
+            if (project.getIsDeleted()) {
+                project.setIsDeleted(false);
+                project.setDeletedAt(null);
+            }
+        }
+    }
+
 }
