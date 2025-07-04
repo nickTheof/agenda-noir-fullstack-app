@@ -51,7 +51,7 @@ public class Project extends AbstractEntity {
     private User owner;
 
     @Getter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", orphanRemoval = true)
     private Set<Ticket> tickets = new HashSet<>();
 
     @PrePersist
