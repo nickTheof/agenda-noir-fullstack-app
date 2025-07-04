@@ -96,7 +96,7 @@ public class User extends AbstractEntity implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @Getter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private Set<Project> projects = new HashSet<>();
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
