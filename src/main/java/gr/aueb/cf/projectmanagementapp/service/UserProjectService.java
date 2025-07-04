@@ -2,7 +2,6 @@ package gr.aueb.cf.projectmanagementapp.service;
 
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectDeletionConflictException;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
-import gr.aueb.cf.projectmanagementapp.core.exceptions.ValidationException;
 import gr.aueb.cf.projectmanagementapp.dto.ProjectCreateDTO;
 import gr.aueb.cf.projectmanagementapp.dto.ProjectPatchDTO;
 import gr.aueb.cf.projectmanagementapp.dto.ProjectReadOnlyDTO;
@@ -27,19 +26,17 @@ public class UserProjectService implements IUserProjectService {
     private final Mapper mapper;
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ProjectReadOnlyDTO> findAllUserProjects(String userUuid) throws AppObjectNotFoundException {
         User user = userRepository.findByUuid(userUuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with uuid " + userUuid + " not found"));
         return user.getAllProjects().stream().map(mapper::mapToProjectReadOnlyDTO).collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ProjectReadOnlyDTO findUserProjectByUuid(String userUuid, String projectUuid) throws AppObjectNotFoundException {
-        if (userRepository.findByUuid(userUuid).isEmpty()) throw new AppObjectNotFoundException("User", "User " + userUuid + " not found");
-        Project project = projectRepository.findByUuidAndOwnerUuid(projectUuid, userUuid).orElseThrow(() -> new AppObjectNotFoundException("Project", "Project with uuid " + projectUuid + " not found"));
-        return mapper.mapToProjectReadOnlyDTO(project);
+        return mapper.mapToProjectReadOnlyDTO(getValidProject(userUuid, projectUuid));
     }
 
     @Transactional
@@ -48,37 +45,37 @@ public class UserProjectService implements IUserProjectService {
         User user = userRepository.findByUuid(userUuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User " + userUuid + " not found"));
         Project newProject = mapper.mapToProject(project);
         newProject.setOwner(user);
-        Project savedProject = projectRepository.save(newProject);
-        return mapper.mapToProjectReadOnlyDTO(savedProject);
+        return mapper.mapToProjectReadOnlyDTO(projectRepository.save(newProject));
     }
 
     @Transactional
     @Override
     public ProjectReadOnlyDTO updateUserProject(String userUuid, String projectUuid, ProjectUpdateDTO updateDTO) throws AppObjectNotFoundException {
-        if (userRepository.findByUuid(userUuid).isEmpty()) throw new AppObjectNotFoundException("User", "User " + userUuid + " not found");
-        Project project = projectRepository.findByUuidAndOwnerUuid(projectUuid, userUuid).orElseThrow(() -> new AppObjectNotFoundException("Project", "Project with uuid " + projectUuid + " not found"));
+        Project project = getValidProject(userUuid, projectUuid);
         Project toUpdate = mapper.mapToProject(updateDTO, project);
-        Project updatedProject = projectRepository.save(toUpdate);
-        return mapper.mapToProjectReadOnlyDTO(updatedProject);
+        return mapper.mapToProjectReadOnlyDTO(projectRepository.save(toUpdate));
     }
 
     @Transactional
     @Override
     public ProjectReadOnlyDTO updateUserProject(String userUuid, String projectUuid, ProjectPatchDTO patchDTO) throws AppObjectNotFoundException {
-        if (userRepository.findByUuid(userUuid).isEmpty()) throw new AppObjectNotFoundException("User", "User with uuid " + userUuid + " not found");
-        Project project = projectRepository.findByUuidAndOwnerUuid(projectUuid, userUuid).orElseThrow(() -> new AppObjectNotFoundException("Project", "Project with uuid " + projectUuid + " not found"));
+        Project project = getValidProject(userUuid, projectUuid);
         Project toUpdate = mapper.mapToProject(patchDTO, project);
-        Project updatedProject = projectRepository.save(toUpdate);
-        return mapper.mapToProjectReadOnlyDTO(updatedProject);
+        return mapper.mapToProjectReadOnlyDTO(projectRepository.save(toUpdate));
     }
 
     @Transactional
     @Override
     public void deleteUserProject(String userUuid, String projectUuid) throws AppObjectNotFoundException, AppObjectDeletionConflictException {
         User user = userRepository.findByUuid(userUuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User " + userUuid + " not found"));
-        Project project = projectRepository.findByUuidAndOwnerUuid(projectUuid, userUuid).orElseThrow(() -> new AppObjectNotFoundException("Project", "Project with uuid " + projectUuid + " not found"));
+        Project project = projectRepository.findByUuidAndOwnerUuid(projectUuid, userUuid).orElseThrow(() -> new AppObjectNotFoundException("Project", "Project " + projectUuid + " not found"));
         if (!project.getAllTickets().isEmpty()) throw new AppObjectDeletionConflictException("Project", "Project cannot be deleted. There are tickets in this project.");
         user.removeProject(project);
         userRepository.save(user);
+    }
+
+    private Project getValidProject(String userUuid, String projectUuid) throws AppObjectNotFoundException {
+        if (!userRepository.existsByUuid(userUuid)) throw new AppObjectNotFoundException("User", "User " + userUuid + " not found");
+        return projectRepository.findByUuidAndOwnerUuid(projectUuid, userUuid).orElseThrow(() -> new AppObjectNotFoundException("Project", "Project " + projectUuid + " not found"));
     }
 }
