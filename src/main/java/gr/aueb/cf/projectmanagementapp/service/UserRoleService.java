@@ -22,6 +22,7 @@ public class UserRoleService implements IUserRoleService {
     private final RoleRepository roleRepository;
     private final Mapper mapper;
 
+    @Transactional(readOnly = true)
     @Override
     public List<RoleReadOnlyDTO> findAllUserRoles(String uuid) throws AppObjectNotFoundException {
         User user = userRepository.findByUuid(uuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + uuid + " not found"));
