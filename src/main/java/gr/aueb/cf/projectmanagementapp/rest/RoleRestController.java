@@ -290,7 +290,7 @@ public class RoleRestController {
         try {
             RoleReadOnlyDTO updatedRole = roleService.updateRole(id, updateDTO);
             LOGGER.info("Update role successfully: {}", updatedRole);
-            return new ResponseEntity<>(updatedRole, HttpStatus.CREATED);
+            return new ResponseEntity<>(updatedRole, HttpStatus.OK);
         } catch (AppObjectAlreadyExistsException | AppObjectInvalidArgumentException | AppObjectNotFoundException e) {
             LOGGER.warn("AppObjectAlreadyExistsException: {}", e.getMessage(), e);
             throw e;
