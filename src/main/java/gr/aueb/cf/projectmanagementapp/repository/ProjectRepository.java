@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpecificationExecutor<Project> {
     Optional<Project> findByUuidAndOwnerUuid(String projectUuid, String ownerUuid);
+    Boolean existsByUuidAndOwnerUuid(String projectUuid, String ownerUuid);
 }
