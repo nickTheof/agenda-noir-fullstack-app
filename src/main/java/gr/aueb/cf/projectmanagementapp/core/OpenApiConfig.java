@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @OpenAPIDefinition(
         info = @Info(title = "My Project Management REST API", version = "1.0"),
-        tags = { //TODO: Add the remaining OPEN API tags for swagger
+        tags = {
                 @Tag(name = "Authentication", description = "User authentication endpoints"),
                 @Tag(name = "Users", description = "User management endpoints"),
                 @Tag(name = "Roles", description = "Role management endpoints"),
+                @Tag(name = "User Roles", description = "User roles management endpoints"),
+                @Tag(name = "User Projects", description = "User projects management endpoints"),
+                @Tag(name = "User Project Tickets", description = "User project tickets management endpoints")
         }
 )
 @SecurityScheme(
