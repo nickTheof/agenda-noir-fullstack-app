@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -50,10 +49,8 @@ public class UserRoleRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "List of users roles returned successfully",
@@ -110,10 +107,8 @@ public class UserRoleRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "List of updated users roles returned successfully",

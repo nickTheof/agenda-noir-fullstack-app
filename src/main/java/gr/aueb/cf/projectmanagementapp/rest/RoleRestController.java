@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,31 +41,31 @@ public class RoleRestController {
     @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_ROLE')")
     @Operation(
             summary = "Get all roles",
-            description = "Retrieve a list of all roles. The list of permission objects are provided to the response object. Requires READ_ROLE authority."
+            description = "Retrieve a list of all roles. The list of permission objects are provided to the response object. Requires READ_ROLE authority.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of roles returned successfully",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = RoleReadOnlyDTO.class)))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+            }
     )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "List of roles returned successfully",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RoleReadOnlyDTO.class)))
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Token not found or expired. Authentication failed.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-    })
     public ResponseEntity<List<RoleReadOnlyDTO>> getAllRoles() {
         List<RoleReadOnlyDTO> roles = roleService.findAllRoles();
         return new ResponseEntity<>(roles, HttpStatus.OK);
@@ -88,49 +87,49 @@ public class RoleRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = RoleCreateDTO.class)
                     )
-            )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Role created successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = RoleReadOnlyDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Validation error",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Role name already exists or Invalid permissions provided",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+            }
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Role created successfully",
-                    content = @Content(
-                            schema = @Schema(implementation = RoleReadOnlyDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Validation error",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Token not found or expired. Authentication failed.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Role name already exists or Invalid permissions provided",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-    })
     public ResponseEntity<RoleReadOnlyDTO> createRole(
             @Valid @RequestBody RoleCreateDTO createDTO,
             BindingResult bindingResult) throws ValidationException, AppObjectInvalidArgumentException, AppObjectAlreadyExistsException {
@@ -161,41 +160,41 @@ public class RoleRestController {
                             schema = @Schema(type = "integer", example = "1"),
                             description = "Role ID"
                     )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Role retrieved successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RoleReadOnlyDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Role not found",
+                            content = @Content(
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    )
             }
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Role retrieved successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = RoleReadOnlyDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Token not found or expired. Authentication failed.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Role not found",
-                    content = @Content(
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            )
-    })
     public ResponseEntity<RoleReadOnlyDTO> getRole(
             @PathVariable("id") Long id
     ) throws AppObjectNotFoundException {
@@ -227,57 +226,57 @@ public class RoleRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = RoleUpdateDTO.class)
                     )
-            )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Role updated successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RoleReadOnlyDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Validation error",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Role not found",
+                            content = @Content(
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "Role name already exists or Invalid permissions provided",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+            }
     )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Role updated successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = RoleReadOnlyDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Validation error",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Token not found or expired. Authentication failed.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Role not found",
-                    content = @Content(
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "Role name already exists or Invalid permissions provided",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-    })
     public ResponseEntity<RoleReadOnlyDTO> updateRole(
             @PathVariable("id") Long id,
             @Valid @RequestBody RoleUpdateDTO updateDTO,
@@ -310,10 +309,8 @@ public class RoleRestController {
                             schema = @Schema(type = "integer", example = "1"),
                             description = "Role ID"
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             description = "The role with the specified id deleted successfully.",
                             responseCode = "204"

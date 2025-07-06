@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,10 +41,8 @@ public class UserRestController {
     @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_USER')")
     @Operation(
             summary = "Get all users",
-            description = "Returns a list of all users in the system. Requires READ_USER authority."
-    )
-    @ApiResponses(
-            value = {
+            description = "Returns a list of all users in the system. Requires READ_USER authority.",
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "List of users returned successfully",
@@ -131,10 +128,8 @@ public class UserRestController {
                                     implementation = UserRegisterDTO.class
                             )
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "201",
                             description = "User created",
@@ -184,10 +179,8 @@ public class UserRestController {
     @GetMapping("/me")
     @Operation(
             summary = "Get current authenticated user",
-            description = "Retrieve information of the current authenticated user"
-    )
-    @ApiResponses(
-            value = {
+            description = "Retrieve information of the current authenticated user",
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Successful retrieve information of the current authenticated user",
@@ -234,10 +227,8 @@ public class UserRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserUpdateDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "User updated successfully",
@@ -360,10 +351,8 @@ public class UserRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Successful retrieve information of the user with the provided uuid",
@@ -429,10 +418,8 @@ public class UserRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserUpdateDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Successful update of the user with the provided uuid",
@@ -513,10 +500,8 @@ public class UserRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = UserPatchDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Successful partial update of the user with the provided uuid",
@@ -590,10 +575,8 @@ public class UserRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             description = "The user deleted successfully.",
                             responseCode = "204"

@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,10 +50,8 @@ public class AuthRestController {
                                     implementation = UserRegisterDTO.class
                             )
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "201",
                             description = "User created",
@@ -140,10 +137,8 @@ public class AuthRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = AuthenticationRequestDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "User authenticated successfully",
@@ -153,11 +148,11 @@ public class AuthRestController {
                             )
                     ),
                     @ApiResponse(
-                    responseCode = "400",
-                    description = "Validation errors for AuthenticationRequestDTO",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class))
+                            responseCode = "400",
+                            description = "Validation errors for AuthenticationRequestDTO",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class))
                     ),
                     @ApiResponse(
                             responseCode = "401",
@@ -194,10 +189,8 @@ public class AuthRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ActivationTokenDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "User verify its own account successfully",
@@ -261,26 +254,26 @@ public class AuthRestController {
                             example = "admin@test.com",
                             in = ParameterIn.PATH
                     )
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Password reset link sent successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiMessageResponseDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Failed to send password reset email",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    )
             }
     )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Password reset link sent successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiMessageResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Failed to send password reset email",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            )
-    })
     public ResponseEntity<ApiMessageResponseDTO> requestPasswordRecovery(
             @PathVariable("username") String username
     ) throws AppServerException {
@@ -318,34 +311,34 @@ public class AuthRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ResetPasswordAfterRecoveryDTO.class)
                     )
-            )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Password reset successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiMessageResponseDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Validation errors for ResetPasswordAfterRecoveryDTO",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token is invalid or has expired",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    )
+            }
     )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Password reset successfully",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiMessageResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Validation errors for ResetPasswordAfterRecoveryDTO",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Token is invalid or has expired",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = ApiErrorDTO.class)
-                    )
-            )
-    })
     public ResponseEntity<ApiMessageResponseDTO> resetPassword(
             @Valid @RequestBody ResetPasswordAfterRecoveryDTO dto,
             BindingResult bindingResult
