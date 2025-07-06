@@ -3,6 +3,7 @@ package gr.aueb.cf.projectmanagementapp.mapper;
 import gr.aueb.cf.projectmanagementapp.core.enums.ProjectStatus;
 import gr.aueb.cf.projectmanagementapp.core.enums.TicketPriority;
 import gr.aueb.cf.projectmanagementapp.core.enums.TicketStatus;
+import gr.aueb.cf.projectmanagementapp.core.filters.ProjectFilters;
 import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.model.Project;
@@ -196,6 +197,38 @@ public class Mapper {
                 project.setDeletedAt(null);
             }
         }
+    }
+
+    public ProjectFilters mapToProjectFilters(ProjectFiltersDTO dto, String ownerUuid) {
+        ProjectFilters projectFilters = new ProjectFilters();
+        if (dto.page() != null) {
+            projectFilters.setPage(dto.page());
+        }
+        if (dto.size() != null) {
+            projectFilters.setSize(dto.size());
+        }
+        if (dto.sortBy() != null) {
+            projectFilters.setSortBy(dto.sortBy());
+        }
+        if (dto.orderBy() != null) {
+            projectFilters.setOrderBy(Sort.Direction.valueOf(dto.orderBy()));
+        }
+        if (dto.uuid() != null) {
+            projectFilters.setUuid(dto.uuid());
+        }
+        if (dto.name() != null) {
+            projectFilters.setName(dto.name());
+        }
+        if (dto.isDeleted() != null) {
+            projectFilters.setIsDeleted(dto.isDeleted());
+        }
+        if (dto.status() != null) {
+            projectFilters.setStatus(dto.status());
+        }
+        if (ownerUuid != null) {
+            projectFilters.setOwnerUuid(ownerUuid);
+        }
+        return projectFilters;
     }
 
     public TicketReadOnlyDTO mapToTicketReadOnlyDTO(Ticket ticket) {

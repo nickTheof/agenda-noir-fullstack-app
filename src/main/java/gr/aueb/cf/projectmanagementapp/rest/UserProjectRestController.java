@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -51,10 +52,8 @@ public class UserProjectRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "List of users returned successfully",
@@ -116,10 +115,8 @@ public class UserProjectRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ProjectCreateDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "201",
                             description = "Project created successfully",
@@ -180,6 +177,61 @@ public class UserProjectRestController {
         }
     }
 
+    @PostMapping("/filtered")
+    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_PROJECT')")
+    @Operation(
+            summary = "Get filtered projects (paginated)",
+            description = "Returns a paginated list of projects matching provided filters. Only accessible by users with READ_PROJECT permission.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = ProjectFiltersDTO.class)
+                    )
+            ),
+            parameters = {
+                    @Parameter(
+                            name = "userUuid",
+                            description = "The unique identifier of the user. This user is the owner of the project.",
+                            required = true,
+                            example = "baba3f82-7b0f-4440-9893-a2f76169802c",
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid")
+                    ),
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered projects retrieved successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = Paginated.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+            }
+    )
+    public ResponseEntity<Paginated<ProjectReadOnlyDTO>> getFilteredProjectsPaginated(
+            @PathVariable("userUuid") String userUuid,
+            @Nullable @RequestBody ProjectFiltersDTO filters
+    ) {
+        if (filters == null) filters = new ProjectFiltersDTO();
+        return new ResponseEntity<>(userProjectService.findUserProjectsFilteredPaginated(filters, userUuid), HttpStatus.OK);
+    }
+
 
     @GetMapping("/{projectUuid}")
     @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_PROJECT') || @authorizationService.hasOwnership(authentication.principal, #userUuid)")
@@ -203,10 +255,8 @@ public class UserProjectRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Project retrieved successfully",
@@ -281,10 +331,8 @@ public class UserProjectRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ProjectUpdateDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Project updated successfully",
@@ -374,10 +422,8 @@ public class UserProjectRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ProjectPatchDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Project updated successfully",
@@ -461,10 +507,8 @@ public class UserProjectRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             description = "The project with the specified uuid deleted successfully.",
                             responseCode = "204"
