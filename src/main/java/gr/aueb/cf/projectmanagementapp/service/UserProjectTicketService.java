@@ -1,10 +1,11 @@
 package gr.aueb.cf.projectmanagementapp.service;
 
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
-import gr.aueb.cf.projectmanagementapp.dto.TicketCreateDTO;
-import gr.aueb.cf.projectmanagementapp.dto.TicketPatchDTO;
-import gr.aueb.cf.projectmanagementapp.dto.TicketReadOnlyDTO;
-import gr.aueb.cf.projectmanagementapp.dto.TicketUpdateDTO;
+import gr.aueb.cf.projectmanagementapp.core.filters.ProjectFilters;
+import gr.aueb.cf.projectmanagementapp.core.filters.TicketFilters;
+import gr.aueb.cf.projectmanagementapp.core.specifications.ProjectSpecification;
+import gr.aueb.cf.projectmanagementapp.core.specifications.TicketSpecification;
+import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
 import gr.aueb.cf.projectmanagementapp.model.Project;
 import gr.aueb.cf.projectmanagementapp.model.Ticket;
@@ -12,6 +13,7 @@ import gr.aueb.cf.projectmanagementapp.repository.ProjectRepository;
 import gr.aueb.cf.projectmanagementapp.repository.TicketRepository;
 import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,14 @@ public class UserProjectTicketService implements IUserProjectTicketService {
         return ticketRepository.findByProjectUuid(projectUuid).stream()
                 .map(mapper::mapToTicketReadOnlyDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Paginated<TicketReadOnlyDTO> findUserProjectTicketsFilteredPaginated(TicketFiltersDTO filters, String userUuid, String projectUuid) {
+        TicketFilters ticketFilters = mapper.mapToTicketFilters(filters, userUuid, projectUuid);
+        var filtered = ticketRepository.findAll(getSpecsFromFilters(ticketFilters), ticketFilters.getPageable());
+        return new Paginated<>(filtered.map(mapper::mapToTicketReadOnlyDTO));
     }
 
     @Transactional(readOnly = true)
@@ -91,5 +101,32 @@ public class UserProjectTicketService implements IUserProjectTicketService {
         return ticketRepository.findByUuidAndProjectUuid(ticketUuid, projectUuid)
                 .orElseThrow(() -> new AppObjectNotFoundException("Ticket",
                         "Ticket with uuid: " + ticketUuid + " not found"));
+    }
+
+
+    private Specification<Ticket> getSpecsFromFilters(TicketFilters filters) {
+        Specification<Ticket> spec = (root, query, builder) -> null;
+        if (filters.getUuid() != null) {
+            spec = spec.and(TicketSpecification.ticketsFieldLike("uuid", filters.getUuid()));
+        }
+        if (filters.getTitle() != null) {
+            spec = spec.and(TicketSpecification.ticketsFieldLike("name", filters.getTitle()));
+        }
+        if (filters.getStatus() != null) {
+            spec = spec.and(TicketSpecification.ticketStatusIn(filters.getStatus()));
+        }
+        if (filters.getPriority() != null) {
+            spec = spec.and(TicketSpecification.ticketPriorityIn(filters.getPriority()));
+        }
+        if (filters.getExpiryDate() != null) {
+            spec = spec.and(TicketSpecification.ticketExpiresBefore(filters.getExpiryDate()));
+        }
+        if (filters.getProjectUuid() != null) {
+            spec = spec.and(TicketSpecification.ticketProjectIs(filters.getProjectUuid()));
+        }
+        if (filters.getOwnerUuid() != null) {
+            spec = spec.and(TicketSpecification.ticketProjectOwnerIs(filters.getOwnerUuid()));
+        }
+        return spec;
     }
 }

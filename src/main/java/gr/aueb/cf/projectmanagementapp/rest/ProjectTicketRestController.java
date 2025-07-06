@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -58,10 +58,8 @@ public class ProjectTicketRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     )
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "List of tickets returned successfully",
@@ -132,10 +130,8 @@ public class ProjectTicketRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = TicketCreateDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "201",
                             description = "Ticket created successfully",
@@ -196,6 +192,70 @@ public class ProjectTicketRestController {
         }
     }
 
+    @PostMapping("/filtered")
+    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_TICKET')")
+    @Operation(
+            summary = "Get filtered tickets (paginated)",
+            description = "Returns a paginated list of tickets matching provided filters. Only accessible by users with READ_TICKET permission.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = TicketFiltersDTO.class)
+                    )
+            ),
+            parameters = {
+                    @Parameter(
+                            name = "userUuid",
+                            description = "The unique identifier of the user. This user is the owner of the project.",
+                            required = true,
+                            example = "baba3f82-7b0f-4440-9893-a2f76169802c",
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid")
+                    ),
+                    @Parameter(
+                            name = "projectUuid",
+                            description = "The unique identifier of the project. This projects belongs to the user with the specified userUuid.",
+                            required = true,
+                            example = "baba3f82-7b0f-4440-9893-a2f76169802c",
+                            in = ParameterIn.PATH,
+                            schema = @Schema(type = "string", format = "uuid")
+                    ),
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Filtered tickets retrieved successfully",
+                            content = @Content(
+                                    schema = @Schema(implementation = Paginated.class
+                                    )
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Token not found or expired. Authentication failed.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden access. Authenticated user has not permission to access the specific resources.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiErrorDTO.class)
+                            )
+                    ),
+            }
+    )
+    public ResponseEntity<Paginated<TicketReadOnlyDTO>> getFilteredTicketsPaginated(
+            @PathVariable("userUuid") String userUuid,
+            @PathVariable("projectUuid") String projectUuid,
+            @Nullable @RequestBody TicketFiltersDTO filters
+    ) {
+        if (filters == null) filters = new TicketFiltersDTO();
+        return new ResponseEntity<>(userProjectTicketService.findUserProjectTicketsFilteredPaginated(filters, userUuid, projectUuid), HttpStatus.OK);
+    }
+
     @GetMapping("/{ticketUuid}")
     @PreAuthorize("@authorizationService.hasOwnership(authentication.principal, #userUuid) || @authorizationService.hasAuthority(authentication.principal, 'READ_TICKET')")
     @Operation(
@@ -227,10 +287,8 @@ public class ProjectTicketRestController {
                             schema = @Schema(type = "string", format = "uuid")
                     ),
 
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Ticket retrieved successfully",
@@ -314,10 +372,8 @@ public class ProjectTicketRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = TicketUpdateDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Ticket updated successfully",
@@ -415,10 +471,8 @@ public class ProjectTicketRestController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = TicketPatchDTO.class)
                     )
-            )
-    )
-    @ApiResponses(
-            value = {
+            ),
+            responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "Ticket updated successfully",
@@ -510,10 +564,8 @@ public class ProjectTicketRestController {
                             in = ParameterIn.PATH,
                             schema = @Schema(type = "string", format = "uuid")
                     ),
-            }
-    )
-    @ApiResponses(
-            value = {
+            },
+            responses = {
                     @ApiResponse(
                             description = "The ticket with the specified uuid deleted successfully.",
                             responseCode = "204"

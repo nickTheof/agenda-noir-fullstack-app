@@ -4,6 +4,7 @@ import gr.aueb.cf.projectmanagementapp.core.enums.ProjectStatus;
 import gr.aueb.cf.projectmanagementapp.core.enums.TicketPriority;
 import gr.aueb.cf.projectmanagementapp.core.enums.TicketStatus;
 import gr.aueb.cf.projectmanagementapp.core.filters.ProjectFilters;
+import gr.aueb.cf.projectmanagementapp.core.filters.TicketFilters;
 import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.model.Project;
@@ -271,6 +272,44 @@ public class Mapper {
             ticket.setExpiryDate(dto.expiryDate());
         }
         return ticket;
+    }
+
+    public TicketFilters mapToTicketFilters(TicketFiltersDTO dto, String ownerUuid, String projectUuid) {
+        TicketFilters ticketFilters = new TicketFilters();
+        if (dto.page() != null) {
+            ticketFilters.setPage(dto.page());
+        }
+        if (dto.size() != null) {
+            ticketFilters.setSize(dto.size());
+        }
+        if (dto.sortBy() != null) {
+            ticketFilters.setSortBy(dto.sortBy());
+        }
+        if (dto.orderBy() != null) {
+            ticketFilters.setOrderBy(Sort.Direction.valueOf(dto.orderBy()));
+        }
+        if (dto.uuid() != null) {
+            ticketFilters.setUuid(dto.uuid());
+        }
+        if (dto.title() != null) {
+            ticketFilters.setTitle(dto.title());
+        }
+        if (dto.status() != null) {
+            ticketFilters.setStatus(dto.status());
+        }
+        if (dto.priority() != null) {
+            ticketFilters.setPriority(dto.priority());
+        }
+        if (dto.expiryDate() != null) {
+            ticketFilters.setExpiryDate(dto.expiryDate());
+        }
+        if (ownerUuid != null) {
+            ticketFilters.setOwnerUuid(ownerUuid);
+        }
+        if (projectUuid != null) {
+            ticketFilters.setProjectUuid(projectUuid);
+        }
+        return ticketFilters;
     }
 
 }
