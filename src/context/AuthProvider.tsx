@@ -1,5 +1,5 @@
 import { AuthContext } from "@/context/AuthContext.ts";
-import { useState, useEffect, type ReactNode, useCallback } from "react";
+import { useState, useEffect, type ReactNode, useCallback, useMemo } from "react";
 import { jwtDecode } from "jwt-decode";
 import { setCookie, deleteCookie, getCookie } from "@/utils/cookie.ts";
 import { login } from "@/api/auth.ts";
@@ -12,9 +12,20 @@ const TOKEN_EXPIRY_HOURS = 3;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [userUuid, setUserUuid] = useState<string | null>(null);
     const [userAuthorities, setUserAuthorities] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+
+    const decodedToken = useMemo(() => {
+        if (!accessToken) return null;
+        try {
+            return jwtDecode<JwtPayload>(accessToken);
+        } catch {
+            return null;
+        }
+    }, [accessToken]);
+
+    const userUuid = useMemo(() => decodedToken?.userUuid ?? null, [decodedToken]);
+    const username = useMemo(() => decodedToken?.sub ?? null, [decodedToken]);
 
     const fetchUserAuthorities = useCallback(async (token: string, uuid: string) => {
         try {
@@ -32,36 +43,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logoutUser = useCallback(() => {
         deleteCookie(COOKIE_NAME, { path: "/" });
         setAccessToken(null);
-        setUserUuid(null);
         setUserAuthorities([]);
     }, []);
 
     const handleToken = useCallback(async (token: string | null) => {
         setAccessToken(token);
-
         if (!token) {
-            setUserUuid(null);
             setUserAuthorities([]);
             return;
         }
-
         try {
             const decoded = jwtDecode<JwtPayload>(token);
-
             if (decoded.exp && Date.now() / 1000 > decoded.exp) {
                 console.warn("Token has expired.");
                 logoutUser();
                 return;
             }
-
-            const uuid = decoded.userUuid ?? null;
-            setUserUuid(uuid);
-            if (uuid) {
-                await fetchUserAuthorities(token, uuid);
+            if (decoded.userUuid) {
+                await fetchUserAuthorities(token, decoded.userUuid);
             }
         } catch (err) {
             console.error("Token decode or authority fetch failed:", err);
-            setUserUuid(null);
             setUserAuthorities([]);
         }
     }, [fetchUserAuthorities, logoutUser]);
@@ -83,7 +85,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 }
             });
 
-        // Cleanup function
         return () => {
             isActive = false;
         };
@@ -119,6 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 isAuthenticated: !!accessToken,
                 accessToken,
                 userUuid,
+                username,
                 loginUser,
                 logout: logoutUser,
                 loading,
