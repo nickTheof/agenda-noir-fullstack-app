@@ -7,7 +7,7 @@ import {Label} from "@radix-ui/react-label";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {toast} from "sonner";
-import {sendPasswordReset} from "@/api/auth/password-recovery.ts";
+import {sendPasswordReset} from "@/api/auth.ts";
 import type {PasswordResetFields} from "@/core/types.ts";
 import {passwordResetSchema} from "@/core/zod-schemas.ts";
 

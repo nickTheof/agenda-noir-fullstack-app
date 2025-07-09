@@ -7,7 +7,7 @@ import {Label} from "@radix-ui/react-label";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {toast} from "sonner";
-import {registerUser} from "@/api/auth/register.ts";
+import {registerUser} from "@/api/auth.ts";
 import type {RegisterFields} from "@/core/types.ts";
 import {registerSchema} from "@/core/zod-schemas.ts";
 

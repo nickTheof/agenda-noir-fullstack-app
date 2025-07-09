@@ -2,9 +2,9 @@ import { AuthContext } from "@/context/AuthContext.ts";
 import { useState, useEffect, type ReactNode, useCallback } from "react";
 import { jwtDecode } from "jwt-decode";
 import { setCookie, deleteCookie, getCookie } from "@/utils/cookie.ts";
-import { login } from "@/api/auth/login.ts";
+import { login } from "@/api/auth.ts";
 import type { LoginFields, JwtPayload } from "@/core/types.ts";
-import { fetchUserRoles } from "@/api/roles/user-roles.ts";
+import { fetchUserRoles } from "@/api/user-roles.ts";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const COOKIE_NAME = "access_token";

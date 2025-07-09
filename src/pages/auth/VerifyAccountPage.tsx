@@ -3,7 +3,7 @@ import {useNavigate, useSearchParams, Navigate} from "react-router";
 import usePageTitle from "@/hooks/usePageTitle.tsx";
 import {Loader2} from "lucide-react";
 import {toast} from "sonner";
-import {verifyAccount} from "@/api/auth/verify-account.ts";
+import {verifyAccount} from "@/api/auth.ts";
 
 
 const VerifyAccountPage = () => {
