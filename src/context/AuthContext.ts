@@ -5,6 +5,7 @@ export type AuthContextProps = {
     isAuthenticated: boolean;
     accessToken: string | null;
     userUuid: string | null;
+    username: string | null;
     userAuthorities: string[];
     userHasAuthority: (authority: string) => boolean;
     loginUser: (fields: LoginFields) => Promise<void>;
