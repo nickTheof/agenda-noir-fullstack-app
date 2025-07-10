@@ -1,9 +1,9 @@
 import {useEffect, useRef} from "react";
 import {useNavigate, useSearchParams, Navigate} from "react-router";
 import usePageTitle from "@/hooks/usePageTitle.tsx";
-import {Loader2} from "lucide-react";
 import {toast} from "sonner";
 import {verifyAccount} from "@/api/auth.ts";
+import LoaderComponent from "@/components/LoaderComponent.tsx";
 
 
 const VerifyAccountPage = () => {
@@ -29,15 +29,10 @@ const VerifyAccountPage = () => {
     }
 
     return (
-        <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="flex flex-col items-center space-y-4 text-center">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                <h2 className="text-lg font-semibold text-foreground">Verifying your account...</h2>
-                <p className="text-sm text-muted-foreground">
-                    Please wait while we confirm your email.
-                </p>
-            </div>
-        </div>
+        <LoaderComponent
+            title="Verifying your account..."
+            subtitle="Please wait while we confirm your email."
+        />
     );
 };
 
