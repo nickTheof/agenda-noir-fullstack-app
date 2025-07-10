@@ -5,6 +5,7 @@ import { setCookie, deleteCookie, getCookie } from "@/utils/cookie.ts";
 import { login } from "@/api/auth.ts";
 import type { LoginFields, JwtPayload } from "@/core/types.ts";
 import { fetchUserRoles } from "@/api/user-roles.ts";
+import LoaderComponent from "@/components/LoaderComponent.tsx";
 
 const isProduction = import.meta.env.VITE_NODE_ENV === "production";
 const COOKIE_NAME = "access_token";
@@ -128,7 +129,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 userHasAuthority
             }}
         >
-            {loading ? <div>Loading...</div> : children}
+            {children}
+            {loading && (
+                <LoaderComponent
+                    title="Authenticating..."
+                    subtitle="Verifying credentials, stand by."
+                />
+            )}
         </AuthContext.Provider>
     );
 };
