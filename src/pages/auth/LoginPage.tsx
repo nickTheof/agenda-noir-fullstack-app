@@ -17,6 +17,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {toast} from "sonner";
 import type {LoginFields} from "@/core/types.ts";
 import {loginSchema} from "@/core/zod-schemas.ts";
+import PasswordInputComponent from "@/components/PasswordInputComponent.tsx";
 
 
 const LoginPage = () => {
@@ -39,7 +40,7 @@ const LoginPage = () => {
         try {
             await loginUser(data);
             toast.success("Login successfully");
-            navigate("/"); //TODO: Fix the navigation link when the protected dashboard has been created
+            navigate("/dashboard/my-profile"); //TODO: Fix the navigation link when the protected dashboard has been finalized
         } catch (err) {
             toast.error(err instanceof Error ? err.message : "Login failed");
             resetField("password");
@@ -72,6 +73,7 @@ const LoginPage = () => {
                                     autoFocus
                                     {...register("username")}
                                     disabled={isSubmitting}
+                                    autoComplete="email"
                                 />
                                 {errors.username && (
                                     <div className="text-red-500 dark:text-red-400">{errors.username.message}</div>
@@ -87,11 +89,12 @@ const LoginPage = () => {
                                         Forgot your password?
                                     </Link>
                                 </div>
-                                <Input
+                                <PasswordInputComponent<LoginFields>
                                     id="password"
-                                    type="password"
-                                    {...register("password")}
+                                    name="password"
+                                    register={register}
                                     disabled={isSubmitting}
+                                    placeholder="Enter your password"
                                 />
                                 {errors.password && (
                                     <div className="text-red-500 dark:text-red-400">{errors.password.message}</div>

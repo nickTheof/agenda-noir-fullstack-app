@@ -10,6 +10,7 @@ import {toast} from "sonner";
 import {registerUser} from "@/api/auth.ts";
 import type {RegisterFields} from "@/core/types.ts";
 import {registerSchema} from "@/core/zod-schemas.ts";
+import PasswordInputComponent from "@/components/PasswordInputComponent.tsx";
 
 
 const RegisterUserPage = () => {
@@ -56,6 +57,7 @@ const RegisterUserPage = () => {
                                        autoFocus
                                        {...register("username")}
                                        disabled={isSubmitting}
+                                       autoComplete="email"
                                 />
                                 {errors.username && (
                                     <div className="text-red-500 dark:text-red-400">{errors.username.message}</div>
@@ -85,11 +87,13 @@ const RegisterUserPage = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password"
-                                       type="password"
-                                       placeholder="Enter your password"
-                                       {...register("password")}
-                                       disabled={isSubmitting}
+                                <PasswordInputComponent
+                                    id="password"
+                                    name="password"
+                                    register={register}
+                                    isSubmitting={isSubmitting}
+                                    placeholder="Enter your password"
+                                    autoComplete="new-password"
                                 />
                                 {errors.password && (
                                     <div className="text-red-500 dark:text-red-400">{errors.password.message}</div>
@@ -97,11 +101,13 @@ const RegisterUserPage = () => {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="confirmPassword">Password Confirmation</Label>
-                                <Input id="confirmPassword"
-                                       type="password"
-                                       placeholder="Enter your password again"
-                                       {...register("confirmPassword")}
-                                       disabled={isSubmitting}
+                                <PasswordInputComponent<RegisterFields>
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    register={register}
+                                    isSubmitting={isSubmitting}
+                                    placeholder="Enter your password again"
+                                    autoComplete="off"
                                 />
                                 {errors.confirmPassword && (
                                     <div className="text-red-500 dark:text-red-400">{errors.confirmPassword.message}</div>
