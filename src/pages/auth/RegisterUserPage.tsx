@@ -57,7 +57,7 @@ const RegisterUserPage = () => {
                                        autoFocus
                                        {...register("username")}
                                        disabled={isSubmitting}
-                                       autoComplete="email"
+                                       autoComplete="off"
                                 />
                                 {errors.username && (
                                     <div className="text-red-500 dark:text-red-400">{errors.username.message}</div>
