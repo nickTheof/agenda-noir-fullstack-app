@@ -1,9 +1,17 @@
 import { Navigate, Outlet } from "react-router";
 import {useAuth} from "@/hooks/useAuth.tsx";
+import LoaderComponent from "@/components/LoaderComponent.tsx";
 
 
 const ProtectedRoute = () => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, loading } = useAuth();
+
+    if (loading) {
+        return <LoaderComponent
+            title="Authenticating..."
+            subtitle="Verifying credentials, stand by."
+        />
+    }
 
     if (!isAuthenticated) {
         return <Navigate to="/auth/login" replace />;
