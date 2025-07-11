@@ -2,6 +2,7 @@ import {Link, useNavigate} from "react-router";
 import ThemeMenuToggle from "@/components/ThemeMenuToggle.tsx";
 import {useAuth} from "@/hooks/useAuth.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {toast} from "sonner";
 
 const Header = () => {
     const {isAuthenticated, username, logout} = useAuth();
@@ -9,6 +10,7 @@ const Header = () => {
 
     const handleLogout = () => {
         logout();
+        toast.success("Logout successful!");
         navigate("/");
     };
 
