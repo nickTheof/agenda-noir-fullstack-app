@@ -3,13 +3,17 @@ import {
     loginSchema,
     passwordRecoveryRequestSchema,
     passwordResetSchema,
-    registerSchema
+    registerSchema,
+    changePasswordSchema
 } from "@/core/zod-schemas.ts";
+import {projectCreateSchema} from "@/core/zod-schemas.ts";
 
 export type PasswordRecoveryRequestFields = z.infer<typeof passwordRecoveryRequestSchema>;
 export type PasswordResetFields = z.infer<typeof passwordResetSchema>
 export type LoginFields = z.infer<typeof loginSchema>;
 export type RegisterFields = z.infer<typeof registerSchema>
+export type ChangePasswordFields = z.infer<typeof changePasswordSchema>
+export type ProjectFormField = z.infer<typeof projectCreateSchema>
 
 export type LoginResponse = {
     token: string
@@ -52,3 +56,15 @@ type RoleResponse = {
 }
 
 export type UserRoleResponse = RoleResponse[];
+
+export type Project = {
+    id: number;
+    uuid: string;
+    name: string;
+    description: string;
+    ownerUuid: string;
+    status: ProjectStatus;
+    deleted: boolean;
+}
+
+export type ProjectStatus = 'OPEN' | 'ON_GOING' | 'CLOSED';

@@ -35,3 +35,20 @@ export const registerSchema = z.object({
     path: ['confirmPassword'],
 });
 
+
+export const changePasswordSchema = z.object({
+    oldPassword: passwordSchema,
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1, "Password is required"),
+}).refine(
+    data => data.newPassword === data.confirmPassword, {
+        message: "Passwords don't match",
+        path: ['confirmPassword'],
+    }
+)
+
+export const projectCreateSchema = z.object({
+    name: z.string().trim().min(1, "Name is required"),
+    description: z.string().trim().min(1, "Description is required").trim(),
+    status: z.string().trim().regex(/^(OPEN|ON_GOING|CLOSED)$/)
+})
