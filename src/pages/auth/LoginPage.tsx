@@ -40,7 +40,7 @@ const LoginPage = () => {
         try {
             await loginUser(data);
             toast.success("Login successfully");
-            navigate("/dashboard/my-profile"); //TODO: Fix the navigation link when the protected dashboard has been finalized
+            navigate("/dashboard/projects/view");
         } catch (err) {
             toast.error(err instanceof Error ? err.message : "Login failed");
             resetField("password");
