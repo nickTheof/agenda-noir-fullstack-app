@@ -21,7 +21,7 @@ const VerifyAccountPage = () => {
         verifyAccount(token)
             .then(() => toast.success('Account verified!'))
             .catch(err => toast.error(err instanceof Error ? err.message : "Verification failed"))
-            .finally(() => navigate('/login', { replace: true }));
+            .finally(() => navigate('/auth/login', { replace: true }));
     }, [token, navigate]);
 
     if (!token) {
