@@ -22,15 +22,10 @@ const LandingPage = () => {
                     Your elegant, minimal project management companion.
                 </p>
 
-                <div className="flex gap-4">
-                    <Link to="/auth/login">
+                <div className="flex items-center justify-center">
+                    <Link to="/dashboard/projects/view">
                         <Button variant="default" size="lg">
-                            Log In
-                        </Button>
-                    </Link>
-                    <Link to="/auth/register">
-                        <Button variant="outline" size="lg">
-                            Register
+                            Continue
                         </Button>
                     </Link>
                 </div>
