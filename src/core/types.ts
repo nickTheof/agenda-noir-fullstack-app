@@ -68,3 +68,12 @@ export type Project = {
 }
 
 export type ProjectStatus = 'OPEN' | 'ON_GOING' | 'CLOSED';
+
+export interface PaginatedResponse<T> {
+    data: T[];
+    totalItems: number;
+    totalPages: number;
+    numberOfElements: number;
+    currentPage: number;
+    pageSize: number;
+}
