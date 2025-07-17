@@ -52,3 +52,12 @@ export const projectCreateSchema = z.object({
     description: z.string().trim().min(1, "Description is required").trim(),
     status: z.string().trim().regex(/^(OPEN|ON_GOING|CLOSED)$/)
 })
+
+
+export const ticketSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    priority: z.string().regex(/^(LOW|MEDIUM|HIGH|CRITICAL)$/),
+    status: z.string().regex(/^(OPEN|ON_GOING|CLOSED)$/),
+    expiryDate: z.string()
+})

@@ -4,9 +4,10 @@ import {
     passwordRecoveryRequestSchema,
     passwordResetSchema,
     registerSchema,
-    changePasswordSchema
+    changePasswordSchema,
+    projectCreateSchema,
+    ticketSchema
 } from "@/core/zod-schemas.ts";
-import {projectCreateSchema} from "@/core/zod-schemas.ts";
 
 export type PasswordRecoveryRequestFields = z.infer<typeof passwordRecoveryRequestSchema>;
 export type PasswordResetFields = z.infer<typeof passwordResetSchema>
@@ -14,6 +15,7 @@ export type LoginFields = z.infer<typeof loginSchema>;
 export type RegisterFields = z.infer<typeof registerSchema>
 export type ChangePasswordFields = z.infer<typeof changePasswordSchema>
 export type ProjectFormField = z.infer<typeof projectCreateSchema>
+export type TicketFormFields = z.infer<typeof ticketSchema>;
 
 export type LoginResponse = {
     token: string
@@ -76,4 +78,14 @@ export interface PaginatedResponse<T> {
     numberOfElements: number;
     currentPage: number;
     pageSize: number;
+}
+
+export type Ticket = {
+    id: string;
+    uuid: string;
+    title: string;
+    description: string;
+    priority: string;
+    status: string;
+    expiryDate: string;
 }
