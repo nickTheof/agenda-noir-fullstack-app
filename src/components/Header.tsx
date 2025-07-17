@@ -26,7 +26,7 @@ const Header = () => {
                 className="container mx-auto sm:px-8 px-20 py-3 flex items-center justify-between"
             >
                 <Link
-                    to="/"
+                    to="/dashboard/projects/view"
                     className="flex items-center gap-4"
                 >
                     <img
