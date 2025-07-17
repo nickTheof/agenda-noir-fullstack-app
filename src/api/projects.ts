@@ -1,29 +1,6 @@
 import type {PaginatedResponse, Project, ProjectFormField} from "@/core/types.ts";
 const BASE_URL: string = import.meta.env.VITE_API_URL;
 
-export async function getUserProjects(
-    userUuid: string,
-    accessToken: string,
-): Promise<Project[]> {
-    const res = await fetch(`${BASE_URL}/users/${userUuid}/projects`, {
-        method: 'GET',
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
-        }
-    })
-    if (!res.ok) {
-        let detail = "Fetch user projects failed";
-        try {
-            const data = await res.json();
-            if (typeof data?.message =="string") detail = data?.message;
-        } catch (err) {
-            console.error(err);
-        }
-        throw new Error(detail);
-    }
-    return await res.json();
-}
 
 export async function getUserProjectsPaginated(
     userUuid: string,
