@@ -61,3 +61,11 @@ export const ticketSchema = z.object({
     status: z.string().regex(/^(OPEN|ON_GOING|CLOSED)$/),
     expiryDate: z.string()
 })
+
+
+export const roleSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    permissions: z.array(z.string()).min(1, "At least one permission is required"),
+});
+
+export const roleUpdateSchema = roleSchema.omit({"name": true});

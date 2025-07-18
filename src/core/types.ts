@@ -6,7 +6,7 @@ import {
     registerSchema,
     changePasswordSchema,
     projectCreateSchema,
-    ticketSchema
+    ticketSchema, roleSchema, roleUpdateSchema
 } from "@/core/zod-schemas.ts";
 
 export type PasswordRecoveryRequestFields = z.infer<typeof passwordRecoveryRequestSchema>;
@@ -16,6 +16,8 @@ export type RegisterFields = z.infer<typeof registerSchema>
 export type ChangePasswordFields = z.infer<typeof changePasswordSchema>
 export type ProjectFormField = z.infer<typeof projectCreateSchema>
 export type TicketFormFields = z.infer<typeof ticketSchema>;
+export type RoleFormFields = z.infer<typeof roleSchema>;
+export type RoleUpdateFields = z.infer<typeof roleUpdateSchema>;
 
 export type LoginResponse = {
     token: string
@@ -44,14 +46,18 @@ export type JwtPayload = {
     exp?: number;
 }
 
-type PermissionResponse = {
-    id: number;
-    name: string;
-    resource: string;
-    action: string;
-}
+export type Resource = "ROLE" | "USER" | "PROJECT" | "TICKET";
+export type Action = "READ" | "CREATE" | "UPDATE" | "DELETE";
+export type PermissionName = `${Action}_${Resource}`
 
-type RoleResponse = {
+export type PermissionResponse = {
+    id: number;
+    name: PermissionName;
+    resource: Resource;
+    action: Action;
+};
+
+export type RoleResponse = {
     id: number;
     name: string;
     permissions: PermissionResponse[];
