@@ -17,6 +17,7 @@ import SettingsPage from "@/pages/dashboard/SettingsPage.tsx";
 import TicketsPage from "@/pages/dashboard/TicketsPage.tsx";
 import TicketModePage from "@/pages/dashboard/TicketModePage.tsx";
 import NotFoundPage from "@/pages/dashboard/NotFoundPage.tsx";
+import RolesPage from "@/pages/dashboard/RolesPage.tsx";
 
 function App() {
 
@@ -36,8 +37,8 @@ function App() {
                                 <Route path="reset-password" element={<PasswordResetPage />} />
                             </Route>
                         </Route>
-                        <Route element={<DashboardLayout/>}>
-                            <Route path="dashboard" element={<ProtectedRoute />}>
+                        <Route path="dashboard" element={<ProtectedRoute />}>
+                            <Route element={<DashboardLayout/>}>
                                 <Route path="projects">
                                     <Route path="view" element={<ProjectsPage />}></Route>
                                     <Route path="new" element={<ProjectCreatePage />}></Route>
@@ -52,6 +53,8 @@ function App() {
 
                                 <Route path="profile">
                                     <Route path="settings" element={<SettingsPage />}></Route>
+                                </Route>
+                                <Route path="roles" element={<RolesPage />}>
                                 </Route>
                             </Route>
                         </Route>
