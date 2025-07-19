@@ -1,4 +1,4 @@
-import {Home, Lock, Settings} from "lucide-react";
+import {Home, Lock, Settings, Users} from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar.tsx";
 import { Link } from "react-router";
 import {useAuth} from "@/hooks/useAuth.tsx";
@@ -16,6 +16,12 @@ const items = [
         url: "/dashboard/roles",
         icon: Lock,
         protection: "READ_ROLE"
+    },
+    {
+        title: "Users",
+        url: "/dashboard/users",
+        icon: Users,
+        protection: "READ_USER"
     },
     {
         title: "Settings",

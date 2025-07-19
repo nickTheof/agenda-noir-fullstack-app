@@ -18,6 +18,7 @@ import TicketsPage from "@/pages/dashboard/TicketsPage.tsx";
 import TicketModePage from "@/pages/dashboard/TicketModePage.tsx";
 import NotFoundPage from "@/pages/dashboard/NotFoundPage.tsx";
 import RolesPage from "@/pages/dashboard/RolesPage.tsx";
+import UsersPage from "@/pages/dashboard/UsersPage.tsx";
 
 function App() {
 
@@ -55,6 +56,9 @@ function App() {
                                     <Route path="settings" element={<SettingsPage />}></Route>
                                 </Route>
                                 <Route path="roles" element={<RolesPage />}>
+                                </Route>
+                                <Route path="users">
+                                    <Route index element={<UsersPage/>} />
                                 </Route>
                             </Route>
                         </Route>
