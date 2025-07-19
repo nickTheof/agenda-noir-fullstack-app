@@ -95,3 +95,5 @@ export type Ticket = {
     status: string;
     expiryDate: string;
 }
+
+export type UserResponse = RegisterUserResponse;
