@@ -6,7 +6,7 @@ import {
     registerSchema,
     changePasswordSchema,
     projectCreateSchema,
-    ticketSchema, roleSchema, roleUpdateSchema
+    ticketSchema, roleSchema, roleUpdateSchema, userRolesFormSchema
 } from "@/core/zod-schemas.ts";
 
 export type PasswordRecoveryRequestFields = z.infer<typeof passwordRecoveryRequestSchema>;
@@ -18,6 +18,7 @@ export type ProjectFormField = z.infer<typeof projectCreateSchema>
 export type TicketFormFields = z.infer<typeof ticketSchema>;
 export type RoleFormFields = z.infer<typeof roleSchema>;
 export type RoleUpdateFields = z.infer<typeof roleUpdateSchema>;
+export type UserRoleEditFormValues =  z.infer<typeof userRolesFormSchema>;
 
 export type LoginResponse = {
     token: string
@@ -97,3 +98,5 @@ export type Ticket = {
 }
 
 export type UserResponse = RegisterUserResponse;
+
+

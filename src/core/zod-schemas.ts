@@ -69,3 +69,7 @@ export const roleSchema = z.object({
 });
 
 export const roleUpdateSchema = roleSchema.omit({"name": true});
+
+export const userRolesFormSchema = z.object({
+    roleNames: z.array(z.string()),
+})
