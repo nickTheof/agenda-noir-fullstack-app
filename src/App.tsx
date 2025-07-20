@@ -20,6 +20,7 @@ import NotFoundPage from "@/pages/dashboard/NotFoundPage.tsx";
 import RolesPage from "@/pages/dashboard/RolesPage.tsx";
 import UsersPage from "@/pages/dashboard/UsersPage.tsx";
 import InsertUserPage from "@/pages/dashboard/InsertUserPage.tsx";
+import UserRoleEditPage from "@/pages/dashboard/UserRoleEditPage.tsx";
 
 function App() {
 
@@ -61,6 +62,7 @@ function App() {
                                 <Route path="users">
                                     <Route index element={<UsersPage/>} />
                                     <Route path="new" element={<InsertUserPage/>} />
+                                    <Route path=":userUuid/edit" element={<UserRoleEditPage />} />
                                 </Route>
                             </Route>
                         </Route>
