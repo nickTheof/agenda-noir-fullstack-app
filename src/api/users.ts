@@ -1,4 +1,10 @@
-import type {ChangePasswordFields, PaginatedResponse, RegisterUserResponse, UserResponse} from "@/core/types.ts";
+import type {
+    ChangePasswordFields,
+    PaginatedResponse,
+    RegisterFields,
+    RegisterUserResponse,
+    UserResponse
+} from "@/core/types.ts";
 
 const BASE_URL: string = import.meta.env.VITE_API_URL;
 
@@ -127,6 +133,37 @@ export async function getUsersPaginated(
             if (typeof data?.message =="string") detail = data?.message;
         } catch (err) {
             console.error(err);
+        }
+        throw new Error(detail);
+    }
+    return await res.json();
+}
+
+
+export async function insertUser(
+    token: string,
+    {username, password, firstname, lastname}: RegisterFields
+): Promise<RegisterUserResponse> {
+    const res = await fetch(`${BASE_URL}/users`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+            username,
+            password,
+            firstname,
+            lastname,
+        })
+    });
+    if (!res.ok){
+        let detail = "User creation failed.";
+        try {
+            const data = await res.json();
+            if (typeof data?.message =="string") detail = data?.message;
+        } catch (error) {
+            console.error(error);
         }
         throw new Error(detail);
     }

@@ -19,6 +19,7 @@ import TicketModePage from "@/pages/dashboard/TicketModePage.tsx";
 import NotFoundPage from "@/pages/dashboard/NotFoundPage.tsx";
 import RolesPage from "@/pages/dashboard/RolesPage.tsx";
 import UsersPage from "@/pages/dashboard/UsersPage.tsx";
+import InsertUserPage from "@/pages/dashboard/InsertUserPage.tsx";
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
                                 </Route>
                                 <Route path="users">
                                     <Route index element={<UsersPage/>} />
+                                    <Route path="new" element={<InsertUserPage/>} />
                                 </Route>
                             </Route>
                         </Route>
