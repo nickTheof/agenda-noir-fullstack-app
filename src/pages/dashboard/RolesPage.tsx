@@ -1,6 +1,6 @@
 import usePageTitle from "@/hooks/usePageTitle.tsx";
 import {useEffect, useState} from "react";
-import type {Action, Resource, RoleResponse} from "@/core/types.ts";
+import type {RoleResponse} from "@/core/types.ts";
 import {useAuth} from "@/hooks/useAuth.tsx";
 import {toast} from "sonner";
 import {useNavigate} from "react-router";
@@ -13,9 +13,7 @@ import {Select, SelectTrigger, SelectValue, SelectContent, SelectItem} from "@/c
 import RoleCardComponent from "@/components/RoleCardComponent.tsx";
 import RoleCreateComponent from "@/components/RoleCreateComponent.tsx";
 import DeleteDialogComponent from "@/components/DeleteDialogComponent.tsx";
-
-const RESOURCES: Resource[] = ["ROLE", "USER", "PROJECT", "TICKET"];
-const ACTIONS: Action[] = ["READ", "CREATE", "UPDATE", "DELETE"];
+import {ACTIONS, RESOURCES} from "@/core/constants.ts";
 
 const RolesPage = () => {
     usePageTitle("Roles Management");
