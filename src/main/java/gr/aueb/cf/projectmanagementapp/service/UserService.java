@@ -8,10 +8,8 @@ import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.core.specifications.UserSpecification;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
-import gr.aueb.cf.projectmanagementapp.model.Role;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import gr.aueb.cf.projectmanagementapp.model.VerificationToken;
-import gr.aueb.cf.projectmanagementapp.repository.RoleRepository;
 import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,7 +26,6 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
     private final Mapper mapper;
-    private final RoleRepository roleRepository;
 
 
     @Override
@@ -150,7 +147,6 @@ public class UserService implements IUserService {
         userRepository.save(updatedUser);
     }
 
-    //TODO! If a user has projects open? The Projects - Tickets are deleted by cascade ???
     @Transactional
     @Override
     public void deleteUserByUuid(String uuid) throws AppObjectNotFoundException {
