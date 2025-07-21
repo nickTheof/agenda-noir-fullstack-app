@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,10 @@ public class UserRoleService implements IUserRoleService {
     @Override
     public List<RoleReadOnlyDTO> changeUserRoles(String uuid, UserRoleInsertDTO dto) throws AppObjectNotFoundException {
         User user = userRepository.findByUuid(uuid).orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + uuid + " not found"));
+        List<Role> rolesToRemove = new ArrayList<>(user.getAllRoles());
+        for (Role role : rolesToRemove) {
+            user.removeRole(role);
+        }
         for (String roleName : dto.roleNames()){
             Role role = roleRepository.findByName(roleName).orElseThrow(() -> new AppObjectNotFoundException("Role", "Role with name " + roleName + " not found"));
             user.addRole(role);
