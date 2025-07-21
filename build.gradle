@@ -45,6 +45,21 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 }
 
+springBoot {
+    mainClass = 'gr.aueb.cf.projectmanagementapp.MyProjectManagementRestApplication'
+}
+
+
+bootJar {
+    archiveFileName = "project-management-app.jar"
+
+    layered {
+        enabled = true
+        includeTools = true
+    }
+
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
