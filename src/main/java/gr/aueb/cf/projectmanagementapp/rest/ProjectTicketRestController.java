@@ -193,7 +193,7 @@ public class ProjectTicketRestController {
     }
 
     @PostMapping("/filtered")
-    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'READ_TICKET')")
+    @PreAuthorize("@authorizationService.hasOwnership(authentication.principal, #userUuid) || @authorizationService.hasAuthority(authentication.principal, 'READ_TICKET')")
     @Operation(
             summary = "Get filtered tickets (paginated)",
             description = "Returns a paginated list of tickets matching provided filters. Only accessible by users with READ_TICKET permission.",

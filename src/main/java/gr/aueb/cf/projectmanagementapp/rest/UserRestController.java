@@ -481,7 +481,7 @@ public class UserRestController {
 
 
     @PatchMapping("/{uuid}")
-    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'UPDATE_USER')")
+    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'UPDATE_USER') || @authorizationService.hasOwnership(authentication.principal, #uuid)")
     @Operation(
             summary = "Partially update user fields by UUID",
             description = "Updates one or more user flags such as enabled, verified, or deleted. Requires UPDATE_USER authority.",
@@ -562,7 +562,7 @@ public class UserRestController {
     }
 
     @DeleteMapping("/{uuid}")
-    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'DELETE_USER')")
+    @PreAuthorize("@authorizationService.hasAuthority(authentication.principal, 'DELETE_USER') || @authorizationService.hasOwnership(authentication.principal, #uuid)")
     @Operation(
             summary = "Delete a user with specific uuid.",
             description = "Deletes a user by its unique UUID. That's an endpoint for a hard delete. It can be accessed only from users with permission to perform DELETE action in User Resource",
