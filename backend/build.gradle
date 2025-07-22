@@ -17,6 +17,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    mockitoAgent
 }
 
 repositories {
@@ -43,6 +44,11 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+    testImplementation 'org.mockito:mockito-core'
+    mockitoAgent 'org.mockito:mockito-core', {
+        transitive = false
+    }
 }
 
 springBoot {
@@ -62,4 +68,6 @@ bootJar {
 
 tasks.named('test') {
     useJUnitPlatform()
+    systemProperty 'spring.profiles.active', 'test'
+    jvmArgs += "-javaagent:${configurations.mockitoAgent.asPath}"
 }
