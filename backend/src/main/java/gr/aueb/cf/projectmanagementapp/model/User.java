@@ -85,6 +85,7 @@ public class User extends AbstractEntity implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationToken verificationToken;
 
+    @Builder.Default
     @Getter(AccessLevel.PRIVATE)
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -95,6 +96,7 @@ public class User extends AbstractEntity implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @Builder.Default
     @Getter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private Set<Project> projects = new HashSet<>();
@@ -161,6 +163,16 @@ public class User extends AbstractEntity implements UserDetails {
         this.passwordLastModified = Instant.now();
     }
 
+    // Soft delete user
+    public void softDelete(){
+        this.deletedAt = LocalDateTime.now();
+        this.verified = false;
+        this.enabled = false;
+        this.isDeleted = true;
+        this.clearPasswordResetToken();
+        this.clearVerificationToken();
+    }
+
     // Password reset methods
     public void createPasswordResetToken(Integer expiryTime) {
         this.passwordResetToken = new PasswordResetToken(this, expiryTime);
@@ -212,6 +224,7 @@ public class User extends AbstractEntity implements UserDetails {
         this.loginConsecutiveFailAttempts = 0;
     }
 
+    // Role Management Helper methods
     public Set<Role> getAllRoles() {
         return Collections.unmodifiableSet(roles);
     }
@@ -229,17 +242,6 @@ public class User extends AbstractEntity implements UserDetails {
         this.roles.remove(role);
         role.getUsers().remove(this);
     }
-
-    // Soft delete user
-    public void softDelete(){
-        this.deletedAt = LocalDateTime.now();
-        this.verified = false;
-        this.enabled = false;
-        this.isDeleted = true;
-        this.clearPasswordResetToken();
-        this.clearVerificationToken();
-    }
-
 
     // Project Management Helper methods
     public Set<Project> getAllProjects() {
