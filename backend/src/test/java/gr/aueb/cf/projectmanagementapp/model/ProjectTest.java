@@ -51,4 +51,17 @@ class ProjectTest {
         assertFalse(project.getAllTickets().contains(ticket));
         assertNull(ticket.getProject());
     }
+
+    @Test
+    void testPrePersistDefaults() {
+        // Project missing UUID, isDeleted, and status
+        Project project = new Project();
+
+        // Simulate @PrePersist lifecycle
+        project.onCreate();
+
+        assertNotNull(project.getUuid());
+        assertFalse(project.getIsDeleted());
+        assertEquals(ProjectStatus.OPEN, project.getStatus());
+    }
 }
