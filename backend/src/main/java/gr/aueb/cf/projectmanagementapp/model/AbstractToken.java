@@ -41,16 +41,6 @@ public abstract class AbstractToken extends AbstractEntity {
         return expiryDate != null && expiryDate.isAfter(LocalDateTime.now());
     }
 
-    public void refreshToken() {
-        this.token = generateRandomToken();
-        this.expiryDate = calculateExpiryDate(DEFAULT_EXPIRATION_MINUTES);
-    }
-
-    public void refreshToken(int customExpiryMinutes) {
-        this.token = generateRandomToken();
-        this.expiryDate = calculateExpiryDate(customExpiryMinutes);
-    }
-
     // Private helpers
     private String generateRandomToken() {
         return UUID.randomUUID().toString();

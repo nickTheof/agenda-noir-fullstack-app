@@ -23,11 +23,6 @@ public class PasswordResetToken extends AbstractToken{
     @JoinColumn(nullable = false, name = "user_id", unique = true)
     private User user;
 
-    public PasswordResetToken(User user) {
-        super();  // Uses DEFAULT_EXPIRATION_MINUTES
-        this.user = user;
-    }
-
     public PasswordResetToken(User user, int customExpiryMinutes) {
         super(customExpiryMinutes);// Custom expiry
         this.user = user;
