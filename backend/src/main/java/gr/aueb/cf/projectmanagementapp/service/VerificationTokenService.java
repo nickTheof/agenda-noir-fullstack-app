@@ -24,31 +24,6 @@ public class VerificationTokenService {
     private final UserRepository userRepository;
 
     @Transactional
-    public VerificationToken generateTokenForUser(String username) throws AppServerException {
-        try {
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new AppObjectNotFoundException("User", "User with username " + username + " not found"));
-
-            // Check for existing valid token
-            if (user.getVerificationToken() != null) {
-                if (user.getVerificationToken().isTokenValid()) {
-                    return user.getVerificationToken();
-                } else {
-                    // Delete if there is token but is expired
-                    user.clearVerificationToken();
-                }
-            }
-            // Create new token
-            user.createVerificationToken(TOKEN_EXPIRATION_MINUTES);
-            User savedUser = userRepository.save(user);
-            return savedUser.getVerificationToken();
-        } catch (Exception e) {
-            throw new AppServerException("Failed to generate verification token", e.getMessage());
-        }
-    }
-
-
-    @Transactional
     public User getUserForValidToken(String token) throws AppObjectNotFoundException {
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
                 .orElseThrow(() -> new AppObjectNotFoundException("Token", "Password reset token not found"));
