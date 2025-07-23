@@ -1,10 +1,8 @@
 package gr.aueb.cf.projectmanagementapp.service;
 
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
-import gr.aueb.cf.projectmanagementapp.core.exceptions.AppServerException;
 import gr.aueb.cf.projectmanagementapp.model.User;
 import gr.aueb.cf.projectmanagementapp.model.VerificationToken;
-import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import gr.aueb.cf.projectmanagementapp.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,16 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class VerificationTokenService {
     private static final int TOKEN_EXPIRATION_HOURS = 24;
-    private static final int TOKEN_EXPIRATION_MINUTES = TOKEN_EXPIRATION_HOURS * 60;
 
     private final VerificationTokenRepository verificationTokenRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public User getUserForValidToken(String token) throws AppObjectNotFoundException {
