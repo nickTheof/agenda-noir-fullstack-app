@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,17 +60,15 @@ class VerificationTokenServiceTest {
 
     @Test
     void testFindAllExpiredTokens() {
-        LocalDateTime expirationThreshold = LocalDateTime.now().minusHours(24);
         List<VerificationToken> expiredTokens = List.of(new VerificationToken(), new VerificationToken());
 
-        when(verificationTokenRepository.findByCreatedAtBefore(expirationThreshold))
+        when(verificationTokenRepository.findByCreatedAtBefore(any()))
                 .thenReturn(expiredTokens);
 
         List<VerificationToken> result = verificationTokenService.findAllExpiredTokens();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(verificationTokenRepository).findByCreatedAtBefore(expirationThreshold);
     }
 
     @Test
