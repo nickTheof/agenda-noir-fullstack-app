@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"nikolaostheofanis4@gmail.com\",\r\n    \"password\": \"aA!12345\",\r\n    \"firstname\": \"Nikolaos\",\r\n    \"lastname\": \"Theofanis\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser@gmail.com\",\r\n    \"password\": \"aA!12345\",\r\n    \"firstname\": \"Nikolaos\",\r\n    \"lastname\": \"Theofanis\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -44,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\": \"niktheof@gmail.com\",\r\n    \"password\": \"aA@12345\"\r\n}",
+							"raw": "{\r\n    \"username\": \"testuser@gmail.com\",\r\n    \"password\": \"aA!12345\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -71,14 +71,14 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{BASE_URL}}/auth/password-recovery/nikolaostheofanis@gmail.com",
+							"raw": "{{BASE_URL}}/auth/password-recovery/testuser@gmail.com",
 							"host": [
 								"{{BASE_URL}}"
 							],
 							"path": [
 								"auth",
 								"password-recovery",
-								"nikolaostheofanis@gmail.com"
+								"testuser@gmail.com"
 							]
 						}
 					},
@@ -191,7 +191,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"lastname\": \"Adentokounbo\"\r\n}",
+									"raw": "{\r\n  \"username\": \"use@mail.com\",\r\n  \"firstname\": \"Nick\",\r\n  \"lastname\": \"Cage\",\r\n  \"password\": \"aA!12345\",\r\n  \"enabled\": true,\r\n  \"verified\": false,\r\n  \"deleted\": false\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
