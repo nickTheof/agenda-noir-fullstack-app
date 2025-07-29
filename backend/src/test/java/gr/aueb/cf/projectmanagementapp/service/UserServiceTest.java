@@ -4,6 +4,7 @@ import gr.aueb.cf.projectmanagementapp.authentication.AuthenticationService;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectAlreadyExistsException;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotAuthorizedException;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
+import gr.aueb.cf.projectmanagementapp.core.filters.UserFilters;
 import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
 import gr.aueb.cf.projectmanagementapp.model.User;
@@ -12,10 +13,17 @@ import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -85,6 +93,45 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(testUuid, result.getFirst().uuid());
+    }
+
+    @Test
+    void testFindUsersFilteredPaginatedShouldReturnPaginatedResults() {
+        int page = 0;
+        int size = 15;
+        String sortBy = "id";
+        String direction = "ASC";
+
+        UserFiltersDTO filtersDTO = new UserFiltersDTO(
+                page, size, sortBy, direction,
+                testUuid, testUsername, testLastName, true, true, false, new ArrayList<>()
+        );
+
+        UserFilters filters = UserFilters.builder()
+                .uuid(filtersDTO.uuid())
+                .username(filtersDTO.username())
+                .lastname(filtersDTO.lastname())
+                .enabled(filtersDTO.enabled())
+                .verified(filtersDTO.verified())
+                .isDeleted(filtersDTO.isDeleted())
+                .permissions(filtersDTO.permissions())
+                .build();
+        filters.setPage(filtersDTO.page());
+        filters.setSize(filtersDTO.size());
+        filters.setSortBy(filtersDTO.sortBy());
+        filters.setOrderBy(Sort.Direction.valueOf(filtersDTO.orderBy()));
+        Pageable pageable = filters.getPageable();
+        Page<User> userPage = new PageImpl<>(List.of(testUser), pageable, 1);
+
+        when(mapper.mapToUserFilters(filtersDTO)).thenReturn(filters);
+        when(userRepository.findAll(ArgumentMatchers.<Specification<User>>any(), eq(filters.getPageable()))).thenReturn(userPage);
+        when(mapper.mapToUserReadOnlyDTO(testUser)).thenReturn(testUserReadOnlyDTO);
+
+        Paginated<UserReadOnlyDTO> result = userService.findUsersFilteredPaginated(filtersDTO);
+
+        assertNotNull(result);
+        assertEquals(1, result.data().size());
+        assertEquals(testUuid, result.data().getFirst().uuid());
     }
 
     @Test
@@ -162,7 +209,7 @@ class UserServiceTest {
         when(userRepository.save(testUser)).thenReturn(testUser);
         when(mapper.mapToUserReadOnlyDTO(testUser)).thenReturn(testUserReadOnlyDTO);
 
-        UserReadOnlyDTO result = userService.registerUser(registerDTO);
+        UserReadOnlyDTO result = userService.insertVerifiedUser(registerDTO);
 
         assertNotNull(result);
         assertEquals(testUuid, result.uuid());
