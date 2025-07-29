@@ -3,10 +3,8 @@ package gr.aueb.cf.projectmanagementapp.service;
 import gr.aueb.cf.projectmanagementapp.core.enums.ProjectStatus;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectDeletionConflictException;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
-import gr.aueb.cf.projectmanagementapp.dto.ProjectCreateDTO;
-import gr.aueb.cf.projectmanagementapp.dto.ProjectPatchDTO;
-import gr.aueb.cf.projectmanagementapp.dto.ProjectReadOnlyDTO;
-import gr.aueb.cf.projectmanagementapp.dto.ProjectUpdateDTO;
+import gr.aueb.cf.projectmanagementapp.core.filters.ProjectFilters;
+import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
 import gr.aueb.cf.projectmanagementapp.model.Project;
 import gr.aueb.cf.projectmanagementapp.model.Ticket;
@@ -16,15 +14,23 @@ import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,7 +87,43 @@ class UserProjectServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(testProjectReadOnlyDTO1));
         assertTrue(result.contains(testProjectReadOnlyDTO2));
+    }
 
+    @Test
+    void testFindUserProjectsFilteredPaginatedShouldReturnPaginatedResults() {
+        int page = 0;
+        int size = 15;
+        String sortBy = "id";
+        String direction = "ASC";
+
+        ProjectFiltersDTO filtersDTO = new ProjectFiltersDTO(
+                page, size, sortBy, direction,
+                testUuid, testProject1.getName(), false, new ArrayList<>()
+        );
+
+        ProjectFilters filters = ProjectFilters.builder()
+                .uuid(filtersDTO.uuid())
+                .name(filtersDTO.name())
+                .isDeleted(filtersDTO.isDeleted())
+                .status(filtersDTO.status())
+                .ownerUuid(testProject1.getOwner().getUuid())
+                .build();
+        filters.setPage(filtersDTO.page());
+        filters.setSize(filtersDTO.size());
+        filters.setSortBy(filtersDTO.sortBy());
+        filters.setOrderBy(Sort.Direction.valueOf(filtersDTO.orderBy()));
+        Pageable pageable = filters.getPageable();
+        Page<Project> projectPage = new PageImpl<>(List.of(testProject1), pageable, 1);
+
+        when(mapper.mapToProjectFilters(filtersDTO, testUser.getUuid())).thenReturn(filters);
+        when(projectRepository.findAll(ArgumentMatchers.<Specification<Project>>any(), eq(filters.getPageable()))).thenReturn(projectPage);
+        when(mapper.mapToProjectReadOnlyDTO(testProject1)).thenReturn(testProjectReadOnlyDTO1);
+
+        Paginated<ProjectReadOnlyDTO> result = userProjectService.findUserProjectsFilteredPaginated(filtersDTO, testUuid);
+
+        assertNotNull(result);
+        assertEquals(1, result.data().size());
+        assertEquals(testUuid, result.data().getFirst().ownerUuid());
     }
 
     @Test
