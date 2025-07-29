@@ -1,0 +1,1196 @@
+{
+	"info": {
+		"_postman_id": "b1a16aa6-9768-4162-8811-768f043a4b26",
+		"name": "Project Management Spring Rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38450857"
+	},
+	"item": [
+		{
+			"name": "Authentication Management",
+			"item": [
+				{
+					"name": "Register User - Open Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"nikolaostheofanis4@gmail.com\",\r\n    \"password\": \"aA!12345\",\r\n    \"firstname\": \"Nikolaos\",\r\n    \"lastname\": \"Theofanis\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/register/open",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								"open"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"niktheof@gmail.com\",\r\n    \"password\": \"aA@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/login/access-token",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								"access-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Password Recovery Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/auth/password-recovery/nikolaostheofanis@gmail.com",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"password-recovery",
+								"nikolaostheofanis@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change password - after successful request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"cdcfc3c3-b838-4004-b558-fccb97e3b346\",\r\n    \"newPassword\": \"aA@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/reset-password",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"437cd9e9-eba2-4402-9501-a87503818130\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/auth/verify-account",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"auth",
+								"verify-account"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users Management",
+			"item": [
+				{
+					"name": "Current Authenticated User",
+					"item": [
+						{
+							"name": "Get Current Authenticated User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/users/me",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Updare Current Authenticated User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"lastname\": \"Adentokounbo\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/users/me",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update my password",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\": \"aA!12345\",\r\n    \"newPassword\": \"aA@12345\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/users/me/change-password",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"me",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Protected by permission actions",
+					"item": [
+						{
+							"name": "Get all users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/users",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all users - Filter and Pagination",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"enabled\": true,\r\n    \"isDeleted\": false,\r\n    \"verified\": true,\r\n    \"lastname\": \"\",\r\n    \"username\": \"\",\r\n    \"permissions\": [],\r\n    \"page\": 0,\r\n    \"size\": 10,\r\n    \"sortBy\": \"id\",\r\n    \"orderBy\": \"DESC\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/users/filtered",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"filtered"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Insert a new verified user",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"nikolaostheofanis4@gmail.com\",\r\n    \"password\": \"aA!12345\",\r\n    \"firstname\": \"Nikolaos\",\r\n    \"lastname\": \"Theofanis\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/users",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user details specified by User UUID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"47edd620-7373-45ac-a3d3-f43d8f5749b0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update a user specified by User UUID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\": \"Takis\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"47edd620-7373-45ac-a3d3-f43d8f5749b0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Partial update of a user specified by User UUID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"enabled\": true,\r\n    \"verified\": true,\r\n    \"deleted\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/users/7dbf86e4-1ed7-4481-8e37-b5fd723a87b8",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"7dbf86e4-1ed7-4481-8e37-b5fd723a87b8"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Hard delete a user  specified by User UUID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{JWT}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}/users/831d0806-4439-4d2d-85b2-05d3cffab070",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"users",
+										"831d0806-4439-4d2d-85b2-05d3cffab070"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Roles Management",
+			"item": [
+				{
+					"name": "Find all roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/roles",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find a role specified by Role ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/roles/2",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"roles",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a role with assigned permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Heros\",\r\n    \"permissions\": [\"READ_USER\", \"CREATE_USER\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/roles",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a role specified by Role ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"HHH\",\r\n    \"permissions\": [\"READ_USER\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/roles/3",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"roles",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a role specified by Role ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/roles/1",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User-Roles Management",
+			"item": [
+				{
+					"name": "Get all roles of a user specified by User UUID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/7dbf86e4-1ed7-4481-8e37-b5fd723a87b8/roles",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"7dbf86e4-1ed7-4481-8e37-b5fd723a87b8",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update roles of a user specified by User UUID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleNames\": [\"MANAGER\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/7dbf86e4-1ed7-4481-8e37-b5fd723a87b8/roles",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"7dbf86e4-1ed7-4481-8e37-b5fd723a87b8",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User-Projects Management",
+			"item": [
+				{
+					"name": "Get all projects of a user specified by User UUID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0/projects",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"47edd620-7373-45ac-a3d3-f43d8f5749b0",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a project specified by Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0/projects/4fd357b3-2b2d-46b9-b4fc-b234b7fab209",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"47edd620-7373-45ac-a3d3-f43d8f5749b0",
+								"projects",
+								"4fd357b3-2b2d-46b9-b4fc-b234b7fab209"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a project of a user specified by User UUID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hero\",\r\n    \"description\": \"A Hero Project\",\r\n    \"status\": \"OPEN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a project of a user specified by Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hero Dash\",\r\n    \"description\": \"Hero Dash 2\",\r\n    \"deleted\": false,\r\n    \"status\": \"CLOSED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0/projects/c2a97150-76de-450e-a222-4cb3161bb47a",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"47edd620-7373-45ac-a3d3-f43d8f5749b0",
+								"projects",
+								"c2a97150-76de-450e-a222-4cb3161bb47a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial update a project of a user specified by Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"ON_GOING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0/projects/c2a97150-76de-450e-a222-4cb3161bb47a",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"47edd620-7373-45ac-a3d3-f43d8f5749b0",
+								"projects",
+								"c2a97150-76de-450e-a222-4cb3161bb47a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a project of a user specified by Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0/projects/4fd357b3-2b2d-46b9-b4fc-b234b7fab209",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"47edd620-7373-45ac-a3d3-f43d8f5749b0",
+								"projects",
+								"4fd357b3-2b2d-46b9-b4fc-b234b7fab209"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get projects of a user filtered and paginated specified by User UUID.",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": [\"OPEN\", \"CLOSED\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/47edd620-7373-45ac-a3d3-f43d8f5749b0/projects/filtered",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"47edd620-7373-45ac-a3d3-f43d8f5749b0",
+								"projects",
+								"filtered"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User-Project-Tickets Management",
+			"item": [
+				{
+					"name": "Get all tickets of a project specified by Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects/48e7c158-90ef-4835-b9a4-85a297af71ce/tickets",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects",
+								"48e7c158-90ef-4835-b9a4-85a297af71ce",
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a ticket specified by Ticket, Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects/48e7c158-90ef-4835-b9a4-85a297af71ce/tickets/99eb5868-9588-45df-95ad-cc780714f022",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects",
+								"48e7c158-90ef-4835-b9a4-85a297af71ce",
+								"tickets",
+								"99eb5868-9588-45df-95ad-cc780714f022"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new ticket to a project specified by Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Hello\",\r\n    \"description\": \"Hello description\",\r\n    \"priority\": \"LOW\",\r\n    \"status\": \"OPEN\",\r\n    \"expiryDate\": \"2025-10-10\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects/48e7c158-90ef-4835-b9a4-85a297af71ce/tickets",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects",
+								"48e7c158-90ef-4835-b9a4-85a297af71ce",
+								"tickets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a ticket specified by Ticket, Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Hello\",\r\n    \"description\": \"Hello description\",\r\n    \"priority\": \"LOW\",\r\n    \"status\": \"OPEN\",\r\n    \"expiryDate\": \"2025-10-15\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects/48e7c158-90ef-4835-b9a4-85a297af71ce/tickets/99eb5868-9588-45df-95ad-cc780714f022",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects",
+								"48e7c158-90ef-4835-b9a4-85a297af71ce",
+								"tickets",
+								"99eb5868-9588-45df-95ad-cc780714f022"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update a ticket specified by Ticket, Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"ON_GOING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects/48e7c158-90ef-4835-b9a4-85a297af71ce/tickets/99eb5868-9588-45df-95ad-cc780714f022",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects",
+								"48e7c158-90ef-4835-b9a4-85a297af71ce",
+								"tickets",
+								"99eb5868-9588-45df-95ad-cc780714f022"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleta a ticket specified by Ticket, Project and User UUIDs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}/users/8053ede1-8bca-44a8-9b87-125a17734c91/projects/48e7c158-90ef-4835-b9a4-85a297af71ce/tickets/99eb5868-9588-45df-95ad-cc780714f022",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"users",
+								"8053ede1-8bca-44a8-9b87-125a17734c91",
+								"projects",
+								"48e7c158-90ef-4835-b9a4-85a297af71ce",
+								"tickets",
+								"99eb5868-9588-45df-95ad-cc780714f022"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
