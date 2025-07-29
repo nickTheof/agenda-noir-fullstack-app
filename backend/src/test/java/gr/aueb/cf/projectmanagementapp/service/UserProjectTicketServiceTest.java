@@ -4,10 +4,8 @@ import gr.aueb.cf.projectmanagementapp.core.enums.ProjectStatus;
 import gr.aueb.cf.projectmanagementapp.core.enums.TicketPriority;
 import gr.aueb.cf.projectmanagementapp.core.enums.TicketStatus;
 import gr.aueb.cf.projectmanagementapp.core.exceptions.AppObjectNotFoundException;
-import gr.aueb.cf.projectmanagementapp.dto.TicketCreateDTO;
-import gr.aueb.cf.projectmanagementapp.dto.TicketPatchDTO;
-import gr.aueb.cf.projectmanagementapp.dto.TicketReadOnlyDTO;
-import gr.aueb.cf.projectmanagementapp.dto.TicketUpdateDTO;
+import gr.aueb.cf.projectmanagementapp.core.filters.TicketFilters;
+import gr.aueb.cf.projectmanagementapp.dto.*;
 import gr.aueb.cf.projectmanagementapp.mapper.Mapper;
 import gr.aueb.cf.projectmanagementapp.model.Project;
 import gr.aueb.cf.projectmanagementapp.model.Ticket;
@@ -18,16 +16,24 @@ import gr.aueb.cf.projectmanagementapp.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,6 +123,45 @@ class UserProjectTicketServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(ticketDTO1));
         assertTrue(result.contains(ticketDTO2));
+    }
+
+    @Test
+    void testFindUserProjectTicketsFilteredPaginatedShouldReturnPaginatedResults() {
+        int page = 0;
+        int size = 15;
+        String sortBy = "id";
+        String direction = "ASC";
+
+        TicketFiltersDTO filtersDTO = new TicketFiltersDTO(
+                page, size, sortBy, direction,
+                ticket1.getUuid(), ticket1.getTitle(), new ArrayList<>(), new ArrayList<>(), LocalDate.now().plusDays(90)
+        );
+
+        TicketFilters filters = TicketFilters.builder()
+                .uuid(filtersDTO.uuid())
+                .title(filtersDTO.title())
+                .status(filtersDTO.status())
+                .priority(filtersDTO.priority())
+                .expiryDate(filtersDTO.expiryDate())
+                .projectUuid(testProjectUuid)
+                .ownerUuid(testUserUuid)
+                .build();
+        filters.setPage(filtersDTO.page());
+        filters.setSize(filtersDTO.size());
+        filters.setSortBy(filtersDTO.sortBy());
+        filters.setOrderBy(Sort.Direction.valueOf(filtersDTO.orderBy()));
+        Pageable pageable = filters.getPageable();
+        Page<Ticket> ticketPage = new PageImpl<>(List.of(ticket1), pageable, 1);
+
+        when(mapper.mapToTicketFilters(filtersDTO, testUserUuid, testProjectUuid)).thenReturn(filters);
+        when(ticketRepository.findAll(ArgumentMatchers.<Specification<Ticket>>any(), eq(filters.getPageable()))).thenReturn(ticketPage);
+        when(mapper.mapToTicketReadOnlyDTO(ticket1)).thenReturn(ticketDTO1);
+
+        Paginated<TicketReadOnlyDTO> result = userProjectTicketService.findUserProjectTicketsFilteredPaginated(filtersDTO, testUserUuid, testProjectUuid);
+
+        assertNotNull(result);
+        assertEquals(1, result.data().size());
+        assertEquals(ticket1.getUuid(), result.data().getFirst().uuid());
     }
 
     @Test
