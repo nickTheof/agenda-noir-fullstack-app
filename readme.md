@@ -115,7 +115,7 @@ Create a `.env` file in the **root directory of the project** (alongside your `d
     - Swagger UI: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 3. **Database - MySQL**
-    - Default port: `3306`
+    - Port: `3307`
     - Managed via Docker
 
 ## 🧪 Running Backend Tests
