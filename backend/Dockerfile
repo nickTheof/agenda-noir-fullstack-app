@@ -2,7 +2,7 @@
 FROM gradle:8-jdk21 AS builder
 WORKDIR /app
 COPY . .
-RUN ./gradlew clean build -x test
+RUN ./gradlew clean bootJar -x test
 
 # -------- Stage 1: Extract layered JAR contents --------
 FROM bellsoft/liberica-openjre-debian:24-cds AS extractor
