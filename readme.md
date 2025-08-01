@@ -121,10 +121,33 @@ Create a `.env` file in the **root directory of the project** (alongside your `d
 ## 🧪 Running Backend Tests
 
 > ⚠️ **Requires Java 21**
+> ⚠️ **Requires MySQL** running locally on default port 3306
 
 To run unit and integration tests for the backend, make sure Java 21 is installed and available in your environment.
+### 🛠️ Test Configuration
+1. **Create Database & User**
+2. **Create application-test.properties**
+Inside backend/src/main/resources, create a new file:
+````properties
+## DB Connection ##
+spring.datasource.url=${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/springtasksdb?serverTimezone=UTC}
+spring.datasource.username=${MYSQL_USER:springuser}
+spring.datasource.password=${MYSQL_PASSWORD:12345}
+spring.jpa.hibernate.ddl-auto=create-drop
 
-### ✅ Run All Tests
+# Email Configuration
+spring.mail.host=${MAIL_HOST:dummy@mail.com}
+spring.mail.port=${MAIL_PORT:587}
+spring.mail.username=${MAIL_USERNAME:smtp.gmail.com}
+spring.mail.password=${MAIL_PASSWORD:dummy}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.debug=true
+
+# JWT Secret Key Configuration
+jwt.secret=${JWT_SECRET_KEY:dummy}
+````
+#### ✅ Run All Tests
 
 ```bash
 cd backend
